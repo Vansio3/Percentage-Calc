@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator (Dark, Fixed Width)</title>
+
+    <!-- PWA: Link to the Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- PWA: Set theme color for browser UI -->
+    <meta name="theme-color" content="#2D2D2D">
+
+    <style>
+        /* Basic Reset & General Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #2D2D2D;
+            color: #EAEAEA;
+            line-height: 1.5;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            background-color: #444;  /* Darker Gray Background */
+            color: #8FBABA; /* Muted Pastel Teal/Cyan Text */
+            padding: 2px 8px;
+            border-radius: 4px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 1.6em;
+            margin-bottom: 0;
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            background-color: #3A3A3A;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #484848;
+            overflow: hidden;
+        }
+
+        /* Input & Output Lines */
+        .input-line, .output-line {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-bottom: -5px;
+        }
+
+        .output-line {
+            margin-top: 10px;
+        }
+
+        /* Input Fields */
+        .calculator-section input[type="number"] {
+            width: 85px;
+            flex-shrink: 0;
+            padding: 8px 10px;
+            border: 1px solid #6A8D8D;
+            background-color: #2D2D2D;
+            color: #EAEAEA;
+            border-radius: 4px;
+            font-size: 0.95em;
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+        .calculator-section input[type=number]::-webkit-inner-spin-button,
+        .calculator-section input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Readonly Output Fields */
+        .calculator-section input[readonly] {
+            background-color: #444;
+            cursor: default;
+            border-color: #555;
+             flex-grow: 1;
+             min-width: 50px;
+             padding: 8px 10px;
+             border-radius: 4px;
+             font-size: 0.95em;
+             color: #EAEAEA;
+             border: 1px solid #555;
+        }
+
+        /* Labels and Text */
+        .calculator-section span {
+            font-size: 0.95em;
+            color: #CFCFCF;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        /* Result Group (contains readonly input + %) */
+        .result-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-grow: 1;
+             min-width: 70px;
+        }
+        .result-group input[readonly] {
+             flex-grow: 1;
+             width: auto;
+             min-width: 50px;
+        }
+         .result-group span { /* The % sign */
+             display: inline-block;
+             width: auto;
+             flex-shrink: 0;
+        }
+
+        /* Buttons */
+        .calculator-section button {
+            padding: 9px 14px;
+            background-color: #5D9C9C;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .calculator-section button:hover { background-color: #4A7C7C; }
+
+
+        /* Larger Screens (Optional tweaks) */
+        @media (min-width: 600px) {
+             /* Optional: Add tweaks here if needed */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">%</div>
+            <h1>Percentage Calculator</h1>
+        </header>
+
+        <!-- Calculator 1: What is X% of Y? -->
+        <section class="calculator-section">
+            <div class="input-line">
+                <span>What is</span>
+                <input type="number" id="calc1-percent" step="any" aria-label="Percentage value">
+                <span>% of</span>
+                <input type="number" id="calc1-base" step="any" aria-label="Base value">
+            </div>
+            <div class="output-line">
+                <button id="calc1-btn">CALCULATE</button>
+                <input type="text" id="calc1-result" readonly aria-label="Calculation result 1">
+            </div>
+        </section>
+
+        <!-- Calculator 2: X is what percent of Y? -->
+        <section class="calculator-section">
+             <div class="input-line">
+                <input type="number" id="calc2-part" step="any" aria-label="Part value">
+                <span>is what % of</span>
+                <input type="number" id="calc2-whole" step="any" aria-label="Whole value">
+            </div>
+            <div class="output-line">
+                 <button id="calc2-btn">CALCULATE</button>
+                <div class="result-group">
+                     <input type="text" id="calc2-result" readonly aria-label="Calculation result 2">
+                     <span id="calc2-percent-symbol">%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator 3: Percentage Increase/Decrease from X to Y -->
+        <section class="calculator-section">
+             <div class="input-line">
+                <span>% change</span>
+                <span>from</span>
+                <input type="number" id="calc3-from" step="any" aria-label="Starting value">
+                <span>to</span>
+                <input type="number" id="calc3-to" step="any" aria-label="Ending value">
+            </div>
+            <div class="output-line">
+                 <button id="calc3-btn">CALCULATE</button>
+                 <div class="result-group">
+                    <input type="text" id="calc3-result" readonly aria-label="Calculation result 3">
+                    <span id="calc3-percent-symbol">%</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Calculator Logic Script -->
+    <script>
+       // Helper function to get float value or null if invalid/empty
+        function getFloatValue(id) {
+            const element = document.getElementById(id);
+            if (!element || element.value.trim() === '') {
+                return null;
+            }
+            const value = parseFloat(element.value);
+            return isNaN(value) ? null : value;
+        }
+
+        // Helper function to display result or error
+        function displayResult(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                if (value === null || typeof value === 'undefined' || value === '') {
+                    element.value = '';
+                } else if (typeof value === 'string') {
+                     element.value = value; // Display error strings directly
+                } else if (typeof value === 'number') {
+                     element.value = parseFloat(value.toFixed(4)).toString();
+                } else {
+                     element.value = '';
+                }
+            }
+        }
+
+         // Function to handle calculation and display
+        function performCalculation(calcFunction, outputId, ...inputIds) {
+            const inputs = inputIds.map(id => getFloatValue(id));
+
+            if (inputs.some(input => input === null)) {
+                 displayResult(outputId, ''); // Clear result if inputs are not valid
+                return;
+            }
+
+            try {
+                const result = calcFunction(...inputs);
+                 displayResult(outputId, result);
+            } catch (error) {
+                 displayResult(outputId, error.message);
+            }
+        }
+
+        // --- Calculator Logic Functions ---
+        function calculatePercentageOf(percent, base) {
+            return (percent / 100) * base;
+        }
+
+        function calculateWhatPercent(part, whole) {
+            if (whole === 0) return 'Cannot divide by zero';
+            return (part / whole) * 100;
+        }
+
+        function calculatePercentChange(fromValue, toValue) {
+            if (fromValue === 0) {
+                return toValue === 0 ? 0 : 'Change from zero undefined';
+            }
+            const change = toValue - fromValue;
+            return (change / Math.abs(fromValue)) * 100;
+        }
+
+        // --- Event Listeners ---
+        document.getElementById('calc1-btn').addEventListener('click', function() {
+            performCalculation(calculatePercentageOf, 'calc1-result', 'calc1-percent', 'calc1-base');
+        });
+        document.getElementById('calc2-btn').addEventListener('click', function() {
+             performCalculation(calculateWhatPercent, 'calc2-result', 'calc2-part', 'calc2-whole');
+        });
+        document.getElementById('calc3-btn').addEventListener('click', function() {
+             performCalculation(calculatePercentChange, 'calc3-result', 'calc3-from', 'calc3-to');
+        });
+
+        // --- Add Enter key functionality ---
+        const sections = document.querySelectorAll('.calculator-section');
+        sections.forEach(section => {
+            const inputs = section.querySelectorAll('.input-line input[type="number"]');
+            const button = section.querySelector('.output-line button');
+            if(inputs.length > 0 && button){
+                inputs.forEach(input => {
+                     input.addEventListener('keypress', function(event) {
+                        if (event.key === 'Enter') {
+                             event.preventDefault();
+                             button.click();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
+    <!-- PWA: Script to Register the Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          // Use './' for relative path from the HTML file location
+          navigator.serviceWorker.register('./service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered successfully with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+
+</body>
+</html>
