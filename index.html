@@ -32,7 +32,6 @@
             color: #EAEAEA;
             line-height: 1.5;
             padding: 10px;
-            /* --- NEW: Disable Text Selection --- */
             user-select: none; /* Standard */
             -webkit-user-select: none; /* Safari */
             -moz-user-select: none; /* Firefox */
@@ -96,6 +95,7 @@
             box-shadow: none;
             -webkit-tap-highlight-color: transparent;
             z-index: 2;
+            display: none; /* --- HIDE BY DEFAULT --- */
         }
          .clear-section-btn:focus,
          .clear-section-btn:active,
@@ -419,48 +419,48 @@
         // Helper function to display result or error
         function displayResult(id, value) {
             const element = document.getElementById(id);
-            // Derive copy button ID from result ID
             const copyBtnId = 'copy-' + id;
             const copyBtn = document.getElementById(copyBtnId);
-
-            let showCopyBtn = false; // Flag to control copy button visibility
+            let showCopyBtn = false;
 
             if (element) {
                 if (value === null || typeof value === 'undefined' || value === '') {
                     element.value = '';
                 } else if (typeof value === 'string' && isNaN(parseFloat(value)) && value !== '0' ) {
-                    // It's likely an error message (not a number or '0')
                     element.value = value;
                 } else if (typeof value === 'number' || (typeof value === 'string' && !isNaN(parseFloat(value))) ) {
-                    // It's a valid number (or a string representing one)
                     element.value = parseFloat(Number(value).toFixed(4)).toString();
-                    showCopyBtn = true; // Show copy button for valid numeric results
+                    showCopyBtn = true;
                 } else {
-                     element.value = ''; // Fallback
+                     element.value = '';
                 }
             }
 
-            // Show/Hide Copy Button
             if (copyBtn) {
                 copyBtn.style.display = showCopyBtn ? 'inline-block' : 'none';
             }
         }
 
-
-         // Function to handle calculation and display (Generic - Not directly used by buttons anymore)
-        function performCalculation(calcFunction, outputId, ...inputIds) {
-            const inputs = inputIds.map(id => getFloatValue(id));
-
-            if (inputs.some(input => input === null)) {
-                 displayResult(outputId, ''); // Clear result if inputs are not valid
-                return;
+        // Helper Function to Check Section Input State
+        function checkSectionHasInput(sectionElement) {
+            if (!sectionElement) return false;
+            const numberInputs = sectionElement.querySelectorAll('.input-line input[type="number"]'); // Check only inputs in input line
+            for (const input of numberInputs) {
+                if (input.value.trim() !== '') return true;
             }
+            const selectInputs = sectionElement.querySelectorAll('.input-line select'); // Check only selects in input line
+            for (const select of selectInputs) {
+                if (select.selectedIndex !== 0) return true;
+            }
+            return false;
+        }
 
-            try {
-                const result = calcFunction(...inputs);
-                 displayResult(outputId, result);
-            } catch (error) {
-                 displayResult(outputId, error.message);
+        // Function to Update Clear Button Visibility
+        function updateClearButtonVisibility(sectionElement) {
+            if (!sectionElement) return;
+            const clearButton = sectionElement.querySelector('.clear-section-btn');
+            if (clearButton) {
+                clearButton.style.display = checkSectionHasInput(sectionElement) ? 'block' : 'none';
             }
         }
 
@@ -488,50 +488,34 @@
              if (isNaN(numBase) || isNaN(numPercent)){
                  return 'Invalid input';
              }
-
             const changeAmount = (numPercent / 100) * numBase;
             if (operation === 'increase') {
                 return numBase + changeAmount;
             } else if (operation === 'decrease') {
                 return numBase - changeAmount;
-            } else {
-                return null;
-            }
+            } else { return null; }
         }
 
         function calculateReversePercentage(finalValue, percent, operation) {
             const numFinal = Number(finalValue);
             const numPercent = Number(percent);
-
-            if (isNaN(numFinal) || isNaN(numPercent)) {
-                return 'Invalid input';
-            }
-
-            if (numPercent < 0) {
-                 return 'Percentage cannot be negative';
-            }
+            if (isNaN(numFinal) || isNaN(numPercent)) return 'Invalid input';
+            if (numPercent < 0) return 'Percentage cannot be negative';
 
             let originalValue;
             const percentAsDecimal = numPercent / 100;
 
             if (operation === 'more') {
-                 if (1 + percentAsDecimal === 0) {
-                     return 'Calculation error';
-                 }
+                 if (1 + percentAsDecimal === 0) return 'Calculation error';
                 originalValue = numFinal / (1 + percentAsDecimal);
             } else if (operation === 'less') {
                 if (percentAsDecimal >= 1) {
                      if (numFinal === 0 && percentAsDecimal === 1) return 0;
                      return 'Cannot be 100% or more less';
                 }
-                 if (1 - percentAsDecimal === 0) {
-                      return 'Calculation error (div by zero)';
-                 }
+                 if (1 - percentAsDecimal === 0) return 'Calculation error (div by zero)';
                 originalValue = numFinal / (1 - percentAsDecimal);
-            } else {
-                return null;
-            }
-
+            } else { return null; }
             return originalValue;
         }
 
@@ -540,52 +524,39 @@
         document.getElementById('calc1-btn').addEventListener('click', function() {
              const percent = getFloatValue('calc1-percent');
              const base = getFloatValue('calc1-base');
-             displayResult('calc1-result', ''); // Clear first
+             displayResult('calc1-result', '');
              if(percent === null || base === null) return;
              displayResult('calc1-result', calculatePercentageOf(percent, base));
         });
-
         document.getElementById('calc2-btn').addEventListener('click', function() {
             const part = getFloatValue('calc2-part');
              const whole = getFloatValue('calc2-whole');
-             displayResult('calc2-result', ''); // Clear first
+             displayResult('calc2-result', '');
              if(part === null || whole === null) return;
              displayResult('calc2-result', calculateWhatPercent(part, whole));
         });
-
         document.getElementById('calc3-btn').addEventListener('click', function() {
             const fromValue = getFloatValue('calc3-from');
              const toValue = getFloatValue('calc3-to');
-             displayResult('calc3-result', ''); // Clear first
+             displayResult('calc3-result', '');
              if(fromValue === null || toValue === null) return;
              displayResult('calc3-result', calculatePercentChange(fromValue, toValue));
         });
-
         document.getElementById('calc4-btn').addEventListener('click', function() {
             const operation = document.getElementById('calc4-operation').value;
             const base = getFloatValue('calc4-base');
             const percent = getFloatValue('calc4-percent');
-
-            displayResult('calc4-result', ''); // Clear first
-
-            if (base === null || percent === null) {
-                return;
-            }
+            displayResult('calc4-result', '');
+            if (base === null || percent === null) return;
              const result = calculateValueChange(operation, base, percent);
              displayResult('calc4-result', result);
         });
-
         document.getElementById('calc5-btn').addEventListener('click', function() {
             const finalValue = getFloatValue('calc5-final');
             const percent = getFloatValue('calc5-percent');
             const operation = document.getElementById('calc5-operation').value;
-
-            displayResult('calc5-result', ''); // Clear first
-
-            if (finalValue === null || percent === null) {
-                return;
-            }
-
+            displayResult('calc5-result', '');
+            if (finalValue === null || percent === null) return;
             const result = calculateReversePercentage(finalValue, percent, operation);
             displayResult('calc5-result', result);
         });
@@ -595,7 +566,7 @@
         const sections = document.querySelectorAll('.calculator-section');
         sections.forEach(section => {
             const inputs = section.querySelectorAll('.input-line input[type="number"]');
-            const button = section.querySelector('.output-line button:not(.clear-section-btn):not(.copy-btn)'); // Target Calculate button
+            const button = section.querySelector('.output-line button:not(.clear-section-btn):not(.copy-btn)');
             if(inputs.length > 0 && button){
                 inputs.forEach(input => {
                      input.addEventListener('keypress', function(event) {
@@ -619,10 +590,11 @@
                     section.querySelectorAll('select').forEach(select => {
                         select.selectedIndex = 0;
                     });
-                    // Hide copy buttons in this section too
                     section.querySelectorAll('.copy-btn').forEach(copyBtn => {
                         copyBtn.style.display = 'none';
                     });
+                    // Re-check state to hide the clear button itself
+                    updateClearButtonVisibility(section);
                 }
             });
         });
@@ -635,9 +607,7 @@
                 const btn = event.target.closest('.copy-btn');
                 const outputLine = btn.closest('.output-line');
                 if (!outputLine) return;
-
                 const resultInput = outputLine.querySelector('input[readonly]');
-
                 if (resultInput && resultInput.value) {
                     try {
                         await navigator.clipboard.writeText(resultInput.value);
@@ -657,6 +627,23 @@
             });
         });
         // --- End Copy Button Functionality ---
+
+
+         // --- Add Input/Change Listeners to Sections for Clear Button ---
+        document.querySelectorAll('.calculator-section').forEach(section => {
+            section.addEventListener('input', (event) => {
+                if (event.target.matches('.input-line input[type="number"]')) {
+                    updateClearButtonVisibility(section);
+                }
+            });
+            section.addEventListener('change', (event) => {
+                if (event.target.matches('.input-line select')) {
+                    updateClearButtonVisibility(section);
+                }
+            });
+        });
+        // --- End Input/Change Listeners ---
+
 
     </script>
 
