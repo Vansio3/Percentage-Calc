@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator</title>
+    <title>Percentage Calculator</title> 
 
     <!-- PWA: Link to the Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -97,9 +97,8 @@
             padding: 12px;
             margin-bottom: 15px;
             border-radius: 6px;
-            /* border: 1px solid #484848; */ /* Default border removed */
-            border: none;
-            border-left: 1px solid transparent; /* Reserve space */
+            border: none; /* Default border removed */
+            border-left: 1px solid transparent; /* Reserve space for highlight */
             overflow: hidden;
             position: relative;
             transition: border-left-color 0.2s ease-in-out; /* Target left border */
@@ -107,8 +106,14 @@
 
         /* Active Section Highlight */
         .calculator-section.active-section {
-             border-left: 1px solid #F2A122; /* UPDATED ORANGE */
+             border-left: 1px solid #F2A122; /* UPDATED ORANGE left border */
         }
+
+        /* Hidden Section Style */
+        .calculator-section.hidden-section {
+            display: none;
+        }
+
 
         /* Clear Button Styling */
         .clear-section-btn {
@@ -187,7 +192,7 @@
         .calculator-section input[type="number"]:focus {
             outline: none;
             box-shadow: none;
-            border-color: #F2A122; /* UPDATED ORANGE */
+            border-color: #F2A122; /* UPDATED ORANGE focus */
         }
 
         /* Readonly Output Fields */
@@ -225,7 +230,7 @@
         }
          .calculator-section select:focus {
             outline: none;
-            border-color: #F2A122; /* UPDATED ORANGE */
+            border-color: #F2A122; /* UPDATED ORANGE focus */
             box-shadow: none;
          }
 
@@ -307,7 +312,7 @@
             border: none !important;
         }
 
-        /* Settings Modal Styles */
+        /* Settings & Layout Editor Modal Styles */
         .modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
@@ -322,12 +327,12 @@
 
         .modal-content {
             background-color: #3A3A3A; /* Match section background */
-            margin: 15% auto; /* 15% from the top and centered */
+            margin: 10% auto; /* Adjusted margin */
             padding: 25px;
             border: 1px solid #484848;
             border-radius: 6px;
-            width: 80%; /* Could be more dynamic */
-            max-width: 400px; /* Maximum width */
+            width: 90%; /* Wider on mobile */
+            max-width: 500px; /* Adjusted max-width */
             position: relative;
             color: #EAEAEA;
         }
@@ -391,17 +396,132 @@
             cursor: pointer;
          }
 
+         /* Layout Editor Specific Styles */
+        hr.modal-divider {
+            border: none;
+            border-top: 1px solid #484848;
+            margin: 20px 0;
+        }
+        button.modal-action-btn { /* Style for Edit Layout / Save Layout buttons */
+             display: block;
+             width: 100%;
+             padding: 10px 15px;
+             margin-top: 15px;
+             background-color: #2196f3; /* Match main button */
+             color: white;
+             border: none;
+             border-radius: 4px;
+             font-size: 1em;
+             cursor: pointer;
+             transition: background-color 0.2s ease;
+        }
+        button.modal-action-btn:hover {
+             background-color: #1976D2;
+        }
+
+        .modal-instructions {
+            font-size: 0.9em;
+            color: #AAAAAA;
+            margin-bottom: 15px;
+        }
+
+        .layout-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0; /* Space before save button */
+            border: 1px dashed #555; /* Add border around list */
+            border-radius: 4px;
+            max-height: 50vh; /* Limit height and allow scrolling */
+            overflow-y: auto;
+        }
+        .layout-list li {
+            background-color: #444;
+            padding: 10px 12px;
+            margin: 5px; /* Space items out slightly */
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: grab; /* Indicate draggable */
+            border: 1px solid #555;
+        }
+        .layout-list li.dragging { /* Style when element is being dragged */
+            opacity: 0.6;
+            background-color: #505050;
+            cursor: grabbing;
+        }
+
+        .drag-handle {
+             color: #AAAAAA;
+             cursor: grab;
+             flex-shrink: 0;
+             font-size: 1.1em;
+        }
+        .layout-title {
+             flex-grow: 1; /* Take up space */
+             font-size: 0.95em;
+             overflow: hidden; /* Prevent text overflow */
+             white-space: nowrap;
+             text-overflow: ellipsis;
+             pointer-events: none; /* Prevent title interfering with drag */
+        }
+
+        /* Simple Toggle Switch CSS */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px; /* Width of the switch */
+            height: 20px; /* Height of the switch */
+            flex-shrink: 0;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #666; /* Off state */
+            transition: .3s;
+            border-radius: 20px; /* Rounded */
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px; /* Size of the knob */
+            width: 14px;
+            left: 3px; /* Position of the knob */
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%; /* Circular knob */
+        }
+        input:checked + .slider {
+            background-color: #2196f3; /* On state */
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px); /* Move knob to the right */
+        }
+
 
         /* Larger Screens (Optional tweaks) */
         @media (min-width: 600px) {
-             /* Optional: Add tweaks here if needed */
+             .modal-content {
+                 margin: 10% auto; /* Less top margin */
+                 width: 80%;
+             }
         }
 
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="calculator-container">
         <header>
             <img src="icons/icon-192.png" alt="Logo" class="logo-img">
             <h1 data-translate-key="headerTitle">Calculator</h1>
@@ -410,8 +530,9 @@
             </button>
         </header>
 
+        <!-- Sections will be ordered by JS based on settings -->
         <!-- Calculator 1: What is X% of Y? -->
-        <section class="calculator-section">
+        <section id="calc-section-1" class="calculator-section" data-title-key="calc1Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc1Desc">Find Percentage of Number</h4>
             <div class="input-line">
@@ -430,7 +551,7 @@
         </section>
 
         <!-- Calculator 2: X is what percent of Y? -->
-        <section class="calculator-section">
+        <section id="calc-section-2" class="calculator-section" data-title-key="calc2Desc">
             <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc2Desc">Find Part's Percentage of Whole</h4>
              <div class="input-line">
@@ -451,7 +572,7 @@
         </section>
 
         <!-- Calculator 3: Percentage Increase/Decrease from X to Y -->
-        <section class="calculator-section">
+        <section id="calc-section-3" class="calculator-section" data-title-key="calc3Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc3Desc">Calculate Percentage Change</h4>
              <div class="input-line">
@@ -474,7 +595,7 @@
         </section>
 
         <!-- Calculator 4: Increase/Decrease X by Y% -->
-        <section class="calculator-section">
+        <section id="calc-section-4" class="calculator-section" data-title-key="calc4Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc4Desc">Value After % Increase/Decrease</h4>
              <div class="input-line">
@@ -497,7 +618,7 @@
         </section>
 
         <!-- Calculator 5: Reverse Percentage (Find Original) -->
-        <section class="calculator-section">
+        <section id="calc-section-5" class="calculator-section" data-title-key="calc5Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc5Desc">Find Original Value (Reverse %)</h4>
              <div class="input-line">
@@ -536,12 +657,28 @@
                 </div>
                 <div class="radio-group">
                     <input type="radio" id="lang-bg" name="language" value="bg">
-                    <label for="lang-bg">Български</label> <!-- Bulgarian -->
+                    <label for="lang-bg">Български</label>
                 </div>
             </div>
+            <hr class="modal-divider">
+            <button id="edit-layout-btn" class="modal-action-btn" data-translate-key="editLayoutBtn">Edit Layout</button>
         </div>
     </div>
     <!-- End Settings Modal -->
+
+    <!-- Layout Editor Modal -->
+    <div id="layout-editor-modal" class="modal">
+        <div class="modal-content">
+             <button id="close-layout-editor-btn" class="modal-close-btn" aria-label="Close layout editor">×</button>
+             <h2 data-translate-key="layoutEditorTitle">Edit Layout</h2>
+             <p class="modal-instructions" data-translate-key="layoutInstructions">Drag to reorder. Toggle visibility.</p>
+             <ul id="layout-editor-list" class="layout-list">
+                 <!-- List items will be generated by JS -->
+             </ul>
+             <button id="save-layout-btn" class="modal-action-btn" data-translate-key="saveLayoutBtn">Save & Close</button>
+        </div>
+    </div>
+    <!-- End Layout Editor Modal -->
 
 
     <!-- Calculator Logic Script -->
@@ -571,7 +708,11 @@
                 calcButton: "CALCULATE",
                 settingsTitle: "Settings",
                 langLabel: "Language:",
-                copyResultLabel: "Copy result"
+                copyResultLabel: "Copy result",
+                editLayoutBtn: "Edit Layout",
+                layoutEditorTitle: "Edit Layout",
+                layoutInstructions: "Drag to reorder. Toggle visibility.",
+                saveLayoutBtn: "Save & Close"
             },
             bg: {
                 headerTitle: "Калкулатор",
@@ -596,7 +737,11 @@
                 calcButton: "ИЗЧИСЛИ",
                 settingsTitle: "Настройки",
                 langLabel: "Език:",
-                copyResultLabel: "Копирай резултата"
+                copyResultLabel: "Копирай резултата",
+                editLayoutBtn: "Редактиране на подредба",
+                layoutEditorTitle: "Редактиране на подредба",
+                layoutInstructions: "Плъзнете за пренареждане. Превключете видимост.",
+                saveLayoutBtn: "Запази и Затвори"
             }
         };
 
@@ -613,7 +758,7 @@
                 const key = element.getAttribute('data-translate-key');
                 if (translations[lang][key]) {
                      if (element.tagName === 'INPUT' && element.type === 'button') { element.value = translations[lang][key]; }
-                     else if (element.tagName === 'BUTTON' || element.tagName === 'OPTION' || element.tagName === 'SPAN' || element.tagName === 'H1' || element.tagName === 'H4' || element.tagName === 'LABEL' || element.tagName === 'H2') { element.textContent = translations[lang][key]; }
+                     else if (element.tagName === 'BUTTON' || element.tagName === 'OPTION' || element.tagName === 'SPAN' || element.tagName === 'H1' || element.tagName === 'H4' || element.tagName === 'LABEL' || element.tagName === 'H2' || element.tagName === 'P') { element.textContent = translations[lang][key]; }
                 } else { console.warn(`Translation key "${key}" not found for lang "${lang}".`); }
             });
              document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -624,48 +769,130 @@
              });
             const radioToCheck = document.getElementById(`lang-${lang}`);
             if (radioToCheck) { radioToCheck.checked = true; }
+             // Re-populate layout editor if it's open to update titles
+             if(layoutEditorModal.style.display === 'block') {
+                 populateLayoutEditor(currentLayoutSettings);
+             }
         }
+
+        // --- Layout Configuration ---
+        const DEFAULT_LAYOUT = [
+            { id: 'calc-section-1', visible: true },
+            { id: 'calc-section-2', visible: true },
+            { id: 'calc-section-3', visible: true },
+            { id: 'calc-section-4', visible: true },
+            { id: 'calc-section-5', visible: true }
+        ];
+        let currentLayoutSettings = []; // Will be loaded
+
+        // --- Persistence Functions ---
+        function saveLayoutSettings(settings) { try { localStorage.setItem('layoutSettings', JSON.stringify(settings)); } catch (e) { console.error("Failed to save layout settings:", e); } }
+        function loadLayoutSettings() {
+            const savedSettings = localStorage.getItem('layoutSettings');
+            try {
+                const parsed = savedSettings ? JSON.parse(savedSettings) : DEFAULT_LAYOUT.map(item => ({...item})); // Use deep copy of default
+                 const currentIds = parsed.map(item => item.id);
+                 const missing = DEFAULT_LAYOUT.filter(item => !currentIds.includes(item.id)).map(item => ({...item})); // Deep copy missing
+                 currentLayoutSettings = [...parsed, ...missing];
+                 const allDefaultIds = DEFAULT_LAYOUT.map(item => item.id);
+                 currentLayoutSettings = currentLayoutSettings.filter(item => allDefaultIds.includes(item.id));
+                 currentLayoutSettings.sort((a, b) => { const indexA = DEFAULT_LAYOUT.findIndex(item => item.id === a.id); const indexB = DEFAULT_LAYOUT.findIndex(item => item.id === b.id); return indexA - indexB; });
+                 return currentLayoutSettings;
+            } catch (e) { console.error("Failed to load or parse layout settings, using default:", e); currentLayoutSettings = DEFAULT_LAYOUT.map(item => ({...item})); return currentLayoutSettings; }
+        }
+
+        // --- Function to Apply Layout to Main Page ---
+        function applyLayout(settings) {
+            const container = document.getElementById('calculator-container');
+            if (!container) return;
+            settings.forEach(item => { const section = document.getElementById(item.id); if (section) { if (item.visible) { section.classList.remove('hidden-section'); } else { section.classList.add('hidden-section'); } } });
+            settings.forEach(item => { if (item.visible) { const section = document.getElementById(item.id); if (section) { container.appendChild(section); } } });
+        }
+
+        // --- Layout Editor Variables ---
+        const layoutEditorModal = document.getElementById('layout-editor-modal');
+        const layoutEditorList = document.getElementById('layout-editor-list');
+        const editLayoutBtn = document.getElementById('edit-layout-btn');
+        const closeLayoutEditorBtn = document.getElementById('close-layout-editor-btn');
+        const saveLayoutBtn = document.getElementById('save-layout-btn');
+        let draggedItem = null;
+
+        // --- Populate Layout Editor ---
+        function populateLayoutEditor(settings) {
+            if (!layoutEditorList) return;
+            layoutEditorList.innerHTML = '';
+            settings.forEach((item, index) => {
+                const sectionElement = document.getElementById(item.id);
+                const titleKey = sectionElement?.getAttribute('data-title-key') || item.id;
+                const titleText = translations[currentLanguage]?.[titleKey] || item.id;
+                const listItem = document.createElement('li');
+                listItem.setAttribute('draggable', true);
+                listItem.dataset.id = item.id; listItem.dataset.index = index;
+                const handle = document.createElement('span'); handle.className = 'drag-handle'; handle.innerHTML = '<i class="fa-solid fa-grip-vertical"></i>';
+                const title = document.createElement('span'); title.className = 'layout-title'; title.textContent = titleText; title.dataset.translateKey = titleKey;
+                const toggleLabel = document.createElement('label'); toggleLabel.className = 'toggle-switch';
+                const toggleInput = document.createElement('input'); toggleInput.type = 'checkbox'; toggleInput.checked = item.visible; toggleInput.dataset.id = item.id; toggleInput.addEventListener('change', handleVisibilityToggle);
+                const slider = document.createElement('span'); slider.className = 'slider';
+                toggleLabel.appendChild(toggleInput); toggleLabel.appendChild(slider);
+                listItem.appendChild(handle); listItem.appendChild(title); listItem.appendChild(toggleLabel);
+                listItem.addEventListener('dragstart', dragStart); listItem.addEventListener('dragover', dragOver); listItem.addEventListener('drop', drop); listItem.addEventListener('dragend', dragEnd);
+                layoutEditorList.appendChild(listItem);
+            });
+        }
+
+        // --- Drag and Drop Handlers ---
+        function dragStart(e) { draggedItem = this; setTimeout(() => this.classList.add('dragging'), 0); e.dataTransfer.effectAllowed = 'move'; }
+        function dragEnd() { setTimeout(() => { if (draggedItem) draggedItem.classList.remove('dragging'); draggedItem = null; }, 0); }
+        function dragOver(e) {
+             e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+             const targetItem = e.target.closest('li');
+             if (targetItem && targetItem !== draggedItem) {
+                 const list = targetItem.parentNode;
+                 const rect = targetItem.getBoundingClientRect(); const offsetY = e.clientY - rect.top;
+                 if (offsetY > rect.height / 2) { list.insertBefore(draggedItem, targetItem.nextSibling); }
+                 else { list.insertBefore(draggedItem, targetItem); }
+                 updateListItemIndices(list);
+             }
+        }
+        function drop(e) { e.preventDefault(); }
+        function updateListItemIndices(list) { list.querySelectorAll('li').forEach((item, index) => { item.dataset.index = index; }); }
+
+        // --- Visibility Toggle Handler ---
+        function handleVisibilityToggle(event) {
+             // Intentionally left blank - visibility state is read on save
+             // We don't update currentLayoutSettings immediately here
+        }
+
+        // --- Modal Control Logic ---
+        editLayoutBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+            // Load FRESH settings from storage when opening editor
+            const settingsToEdit = loadLayoutSettings();
+            populateLayoutEditor(settingsToEdit);
+            layoutEditorModal.style.display = 'block';
+        });
+        closeLayoutEditorBtn.addEventListener('click', () => { layoutEditorModal.style.display = 'none'; });
+        saveLayoutBtn.addEventListener('click', () => {
+             const updatedSettings = [];
+             layoutEditorList.querySelectorAll('li').forEach(item => { const id = item.dataset.id; const checkbox = item.querySelector('input[type="checkbox"]'); updatedSettings.push({ id: id, visible: checkbox.checked }); });
+             currentLayoutSettings = updatedSettings;
+             saveLayoutSettings(currentLayoutSettings);
+             applyLayout(currentLayoutSettings);
+             layoutEditorModal.style.display = 'none';
+             // Re-check clear button visibility based on new layout
+             document.querySelectorAll('.calculator-section').forEach(section => { if (!section.classList.contains('hidden-section')) updateClearButtonVisibility(section); });
+
+        });
+
 
        // Helper function to get float value or null if invalid/empty
-        function getFloatValue(id) {
-            const element = document.getElementById(id);
-            if (!element || element.value.trim() === '') return null;
-            const value = parseFloat(element.value);
-            return isNaN(value) ? null : value;
-        }
-
+        function getFloatValue(id) { const element = document.getElementById(id); if (!element || element.value.trim() === '') return null; const value = parseFloat(element.value); return isNaN(value) ? null : value; }
         // Helper function to display result or error
-        function displayResult(id, value) {
-             const element = document.getElementById(id);
-             const copyBtnId = 'copy-' + id;
-             const copyBtn = document.getElementById(copyBtnId);
-             let showCopyBtn = false;
-             if (element) {
-                 if (value === null || typeof value === 'undefined' || value === '') { element.value = ''; }
-                 else if (typeof value === 'string' && isNaN(parseFloat(value)) && value !== '0') { element.value = value; }
-                 else if (typeof value === 'number' || (typeof value === 'string' && !isNaN(parseFloat(value)))) { element.value = parseFloat(Number(value).toFixed(4)).toString(); showCopyBtn = true; }
-                 else { element.value = ''; }
-             }
-             if (copyBtn) { copyBtn.style.display = showCopyBtn ? 'inline-block' : 'none'; }
-         }
-
+        function displayResult(id, value) { const element = document.getElementById(id); const copyBtnId = 'copy-' + id; const copyBtn = document.getElementById(copyBtnId); let showCopyBtn = false; if (element) { if (value === null || typeof value === 'undefined' || value === '') { element.value = ''; } else if (typeof value === 'string' && isNaN(parseFloat(value)) && value !== '0') { element.value = value; } else if (typeof value === 'number' || (typeof value === 'string' && !isNaN(parseFloat(value)))) { element.value = parseFloat(Number(value).toFixed(4)).toString(); showCopyBtn = true; } else { element.value = ''; } } if (copyBtn) { copyBtn.style.display = showCopyBtn ? 'inline-block' : 'none'; } }
         // Helper Function to Check Section Input State
-        function checkSectionHasInput(sectionElement) {
-             if (!sectionElement) return false;
-             const numberInputs = sectionElement.querySelectorAll('.input-line input[type="number"]');
-             for (const input of numberInputs) { if (input.value.trim() !== '') return true; }
-             const selectInputs = sectionElement.querySelectorAll('.input-line select');
-             for (const select of selectInputs) { if (select.selectedIndex !== 0) return true; }
-             return false;
-         }
-
+        function checkSectionHasInput(sectionElement) { if (!sectionElement) return false; const numberInputs = sectionElement.querySelectorAll('.input-line input[type="number"]'); for (const input of numberInputs) { if (input.value.trim() !== '') return true; } const selectInputs = sectionElement.querySelectorAll('.input-line select'); for (const select of selectInputs) { if (select.selectedIndex !== 0) return true; } return false; }
         // Function to Update Clear Button Visibility
-        function updateClearButtonVisibility(sectionElement) {
-             if (!sectionElement) return;
-             const clearButton = sectionElement.querySelector('.clear-section-btn');
-             if (clearButton) { clearButton.style.display = checkSectionHasInput(sectionElement) ? 'block' : 'none'; }
-         }
-
+        function updateClearButtonVisibility(sectionElement) { if (!sectionElement) return; const clearButton = sectionElement.querySelector('.clear-section-btn'); if (clearButton) { clearButton.style.display = checkSectionHasInput(sectionElement) ? 'block' : 'none'; } }
         // --- Calculator Logic Functions ---
         function calculatePercentageOf(percent, base) { return (percent / 100) * base; }
         function calculateWhatPercent(part, whole) { if (whole === 0) return 'Cannot divide by zero'; return (part / whole) * 100; }
@@ -700,47 +927,34 @@
         // --- Section Activation/Deactivation Logic ---
         const allCalculatorSections = document.querySelectorAll('.calculator-section');
         function deactivateAllSections() { allCalculatorSections.forEach(sec => { sec.classList.remove('active-section'); }); }
-        allCalculatorSections.forEach(section => { section.addEventListener('click', (event) => { if (!section.classList.contains('active-section')) { deactivateAllSections(); section.classList.add('active-section'); } }); });
-        document.addEventListener('click', (event) => { const clickedInsideSection = event.target.closest('.calculator-section'); const clickedInsideSettings = event.target.closest('#settings-btn') || event.target.closest('#settings-modal'); if (!clickedInsideSection && !clickedInsideSettings) { deactivateAllSections(); } });
+        allCalculatorSections.forEach(section => { section.addEventListener('click', (event) => { // Only activate if clicking within the section but NOT on a button inside it
+             if (!event.target.closest('button')) {
+                 if (!section.classList.contains('active-section')) { deactivateAllSections(); section.classList.add('active-section'); }
+             }
+         }); });
+        document.addEventListener('click', (event) => { const clickedInsideSection = event.target.closest('.calculator-section'); const clickedInsideSettings = event.target.closest('#settings-btn') || event.target.closest('#settings-modal') || event.target.closest('#layout-editor-modal'); if (!clickedInsideSection && !clickedInsideSettings) { deactivateAllSections(); } });
 
 
-        // --- Settings Modal Logic ---
+        // --- Settings Modal Logic (Main) ---
         const settingsBtn = document.getElementById('settings-btn');
         const settingsModal = document.getElementById('settings-modal');
         const closeSettingsBtn = document.getElementById('close-settings-btn');
         const langRadios = document.querySelectorAll('input[name="language"]');
 
-        settingsBtn.addEventListener('click', () => {
-            settingsModal.style.display = 'block';
-            const currentLangRadio = document.getElementById(`lang-${currentLanguage}`);
-            if(currentLangRadio) currentLangRadio.checked = true;
-        });
+        settingsBtn.addEventListener('click', () => { settingsModal.style.display = 'block'; const currentLangRadio = document.getElementById(`lang-${currentLanguage}`); if(currentLangRadio) currentLangRadio.checked = true; });
+        closeSettingsBtn.addEventListener('click', () => { settingsModal.style.display = 'none'; });
+        window.addEventListener('click', (event) => { if (event.target == settingsModal) { settingsModal.style.display = 'none'; } }); // Close on outside click
+        langRadios.forEach(radio => { radio.addEventListener('change', (event) => { if (event.target.checked) { setLanguage(event.target.value); } }); });
 
-        closeSettingsBtn.addEventListener('click', () => {
-            settingsModal.style.display = 'none';
-        });
 
-        window.addEventListener('click', (event) => {
-            if (event.target == settingsModal) {
-                settingsModal.style.display = 'none';
-            }
-        });
-
-        langRadios.forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                if (event.target.checked) {
-                    setLanguage(event.target.value);
-                }
-            });
-        });
-
-        // --- Initial Language Load ---
+        // --- Initial Page Load ---
         document.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('language');
             const initialLang = savedLang && translations[savedLang] ? savedLang : 'en';
             setLanguage(initialLang);
-             // Initialize clear button visibility on load
-            document.querySelectorAll('.calculator-section').forEach(section => {
+            const settings = loadLayoutSettings();
+            applyLayout(settings);
+            document.querySelectorAll('.calculator-section:not(.hidden-section)').forEach(section => {
                 updateClearButtonVisibility(section);
             });
         });
