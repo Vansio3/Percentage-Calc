@@ -97,20 +97,22 @@
             padding: 12px;
             margin-bottom: 15px;
             border-radius: 6px;
-            /* Default border */
-            border: 1px solid #484848;
+            /* REMOVE default border */
+            /* border: 1px solid #484848; */
+            border: none; /* Remove all borders by default */
+            /* ADD transparent left border to reserve space */
+            border-left: 1px solid transparent;
             overflow: hidden;
-            position: relative; /* Needed for absolute positioning of clear button */
-            /* Add transition for smoother border change */
-            transition: border-color 0.2s ease-in-out;
+            position: relative;
+            /* Update transition to target border-left-color */
+            transition: border-left-color 0.2s ease-in-out;
         }
 
         /* --- NEW: Active Section Highlight --- */
         .calculator-section.active-section {
-             border-color: #FF9800; /* Use the same orange as input focus */
-             /* Optional: Make it dashed */
-             /* border-style: dashed; */
-             /* border-width: 1px; Ensure width is consistent if changing style */
+             /* Set only the left border color/style */
+             border-left: 1px solid #FF9800; /* Orange left border */
+             /* REMOVE border-color: #FF9800; */
         }
         /* --- End Active Section Highlight --- */
 
