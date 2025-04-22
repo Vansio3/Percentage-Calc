@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Percentage Calculator (Dark, Fixed Width)</title>
 
-    <!-- PWA: Link to the Web App Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA: Link to the Web App Manifest (Corrected Path) -->
+    <link rel="manifest" href="/Percentage-Calc/manifest.json">
 
     <!-- PWA: Set theme color for browser UI -->
     <meta name="theme-color" content="#2D2D2D">
@@ -323,12 +323,12 @@
         });
     </script>
 
-    <!-- PWA: Script to Register the Service Worker -->
+    <!-- PWA: Script to Register the Service Worker (Corrected Path) -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Use './' for relative path from the HTML file location
-          navigator.serviceWorker.register('./service-worker.js')
+          // Use the absolute path from the domain root
+          navigator.serviceWorker.register('/Percentage-Calc/service-worker.js')
             .then(registration => {
               console.log('Service Worker registered successfully with scope:', registration.scope);
             })
