@@ -68,15 +68,48 @@
             border-radius: 6px;
             border: 1px solid #484848;
             overflow: hidden;
+            position: relative; /* Needed for absolute positioning of clear button */
         }
 
-        .section-description {
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #AAAAAA;
-            margin-bottom: 10px;
-            line-height: 1.3;
+        /* NEW: Clear Button Styling */
+        .clear-section-btn {
+            position: absolute;
+            top: 8px; /* Adjust position as needed */
+            right: 10px; /* Adjust position as needed */
+            background: none;
+            border: none;
+            color: #AAAAAA; /* Subtle color */
+            font-size: 1.5em; /* Make the 'x' larger */
+            font-weight: bold;
+            line-height: 1; /* Prevent extra vertical space */
+            padding: 0 4px; /* Small padding for easier clicking */
+            cursor: pointer;
+            outline: none; /* Remove focus outline */
+            box-shadow: none; /* Ensure no focus shadow */
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+            z-index: 2; /* Ensure it's above description */
         }
+        /* Prevent any focus/active styling */
+         .clear-section-btn:focus,
+         .clear-section-btn:active,
+         .clear-section-btn:hover { /* Add hover to prevent default browser hover styles */
+             outline: none !important; /* Use !important cautiously if needed */
+             box-shadow: none !important;
+             background: none !important;
+             color: #AAAAAA !important; /* Maintain color */
+             border: none !important;
+         }
+
+        /* Section Description Styling */
+        .section-description {
+            font-size: 0.85em; /* Smaller than labels */
+            font-weight: 600; /* Semi-bold */
+            color: #AAAAAA; /* Lighter grey */
+            margin-bottom: 10px; /* Space below description */
+            line-height: 1.3;
+            padding-right: 25px; /* Add padding so text doesn't overlap button */
+        }
+
 
         /* Input & Output Lines */
         .input-line, .output-line {
@@ -117,7 +150,7 @@
             background-color: #444;
             cursor: default;
             border-color: #555;
-             flex-grow: 1; /* Allow result field to grow */
+             flex-grow: 1;
              min-width: 50px;
              padding: 8px 10px;
              border-radius: 4px;
@@ -138,7 +171,7 @@
             border-radius: 4px;
             font-size: 0.95em;
             flex-shrink: 0;
-            width: auto;
+            width: auto; /* Use auto width */
         }
 
         /* Labels and Text */
@@ -154,11 +187,11 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            flex-grow: 1; /* Allow group to grow */
+            flex-grow: 1;
              min-width: 70px;
         }
         .result-group input[readonly] {
-             flex-grow: 1; /* Input takes space within the group */
+             flex-grow: 1;
              width: auto;
              min-width: 50px;
         }
@@ -169,7 +202,7 @@
         }
 
         /* Buttons */
-        .calculator-section button { /* Style for CALCULATE buttons */
+        .calculator-section button:not(.clear-section-btn) { /* Target calculation buttons only */
             padding: 9px 14px;
             background-color: #2196f3;
             color: #FFFFFF;
@@ -182,30 +215,9 @@
             flex-shrink: 0;
             white-space: nowrap;
         }
-        .calculator-section button:hover {
+        .calculator-section button:not(.clear-section-btn):hover {
             background-color: #1976D2;
         }
-
-        /* --- NEW: Clear Button Styling --- */
-        .clear-btn {
-            background-color: #616161; /* Mid-gray background */
-            color: #bdbdbd; /* Lighter gray text */
-            border: none;
-            border-radius: 4px;
-            font-size: 0.9em; /* Slightly smaller */
-            font-weight: bold;
-            line-height: 1; /* Ensure 'X' centers vertically */
-            padding: 6px 9px; /* Smaller padding */
-            cursor: pointer;
-            flex-shrink: 0; /* Don't shrink */
-            margin-left: 4px; /* Add a small gap after the result field */
-            transition: background-color 0.2s ease;
-        }
-        .clear-btn:hover {
-            background-color: #757575; /* Slightly lighter gray on hover */
-            color: #e0e0e0;
-        }
-        /* --- END NEW CSS --- */
 
 
         /* Larger Screens (Optional tweaks) */
@@ -224,7 +236,8 @@
         </header>
 
         <!-- Calculator 1: What is X% of Y? -->
-        <section class="calculator-section" id="section-1"> <!-- Added section ID -->
+        <section class="calculator-section">
+             <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description">Find Percentage of Number</h4>
             <div class="input-line">
                 <span>What is</span>
@@ -235,13 +248,12 @@
             <div class="output-line">
                 <button id="calc1-btn">CALCULATE</button>
                 <input type="text" id="calc1-result" readonly aria-label="Calculation result 1">
-                <!-- ADDED CLEAR BUTTON -->
-                <button class="clear-btn" id="clear-1" aria-label="Clear Section 1">X</button>
             </div>
         </section>
 
         <!-- Calculator 2: X is what percent of Y? -->
-        <section class="calculator-section" id="section-2"> <!-- Added section ID -->
+        <section class="calculator-section">
+            <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description">Find Part's Percentage of Whole</h4>
              <div class="input-line">
                 <input type="number" id="calc2-part" step="any" aria-label="Part value">
@@ -254,13 +266,12 @@
                      <input type="text" id="calc2-result" readonly aria-label="Calculation result 2">
                      <span id="calc2-percent-symbol">%</span>
                 </div>
-                 <!-- ADDED CLEAR BUTTON -->
-                <button class="clear-btn" id="clear-2" aria-label="Clear Section 2">X</button>
             </div>
         </section>
 
         <!-- Calculator 3: Percentage Increase/Decrease from X to Y -->
-        <section class="calculator-section" id="section-3"> <!-- Added section ID -->
+        <section class="calculator-section">
+             <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description">Calculate Percentage Change</h4>
              <div class="input-line">
                 <span>% change</span>
@@ -275,13 +286,12 @@
                     <input type="text" id="calc3-result" readonly aria-label="Calculation result 3">
                     <span id="calc3-percent-symbol">%</span>
                 </div>
-                 <!-- ADDED CLEAR BUTTON -->
-                <button class="clear-btn" id="clear-3" aria-label="Clear Section 3">X</button>
             </div>
         </section>
 
         <!-- Calculator 4: Increase/Decrease X by Y% -->
-        <section class="calculator-section" id="section-4"> <!-- Added section ID -->
+        <section class="calculator-section">
+             <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description">Value After % Increase/Decrease</h4>
              <div class="input-line">
                 <select id="calc4-operation" aria-label="Operation Type">
@@ -296,13 +306,12 @@
             <div class="output-line">
                  <button id="calc4-btn">CALCULATE</button>
                  <input type="text" id="calc4-result" readonly aria-label="Calculation result 4">
-                  <!-- ADDED CLEAR BUTTON -->
-                 <button class="clear-btn" id="clear-4" aria-label="Clear Section 4">X</button>
             </div>
         </section>
 
         <!-- Calculator 5: Reverse Percentage (Find Original) -->
-        <section class="calculator-section" id="section-5"> <!-- Added section ID -->
+        <section class="calculator-section">
+             <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description">Find Original Value (Reverse %)</h4>
              <div class="input-line">
                 <input type="number" id="calc5-final" step="any" aria-label="Final value">
@@ -318,8 +327,6 @@
             <div class="output-line">
                  <button id="calc5-btn">CALCULATE</button>
                  <input type="text" id="calc5-result" readonly aria-label="Calculation result 5 (Original Value)">
-                  <!-- ADDED CLEAR BUTTON -->
-                 <button class="clear-btn" id="clear-5" aria-label="Clear Section 5">X</button>
             </div>
         </section>
         <!-- End Calculator Sections -->
@@ -353,25 +360,6 @@
                 }
             }
         }
-
-        // Helper to clear fields within a specific section
-        function clearSectionFields(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                // Clear number inputs
-                const numberInputs = section.querySelectorAll('input[type="number"]');
-                numberInputs.forEach(input => input.value = '');
-                // Clear result input (readonly text)
-                const resultInput = section.querySelector('input[readonly]');
-                if (resultInput) {
-                    resultInput.value = '';
-                }
-                // Reset select dropdowns to first option (optional)
-                const selects = section.querySelectorAll('select');
-                selects.forEach(select => select.selectedIndex = 0);
-            }
-        }
-
 
          // Function to handle calculation and display (Generic, potentially used by Enter key if refactored)
         function performCalculation(calcFunction, outputId, ...inputIds) {
@@ -462,7 +450,7 @@
         }
 
 
-        // --- Event Listeners for CALCULATE buttons ---
+        // --- Event Listeners ---
         document.getElementById('calc1-btn').addEventListener('click', function() {
              const percent = getFloatValue('calc1-percent');
              const base = getFloatValue('calc1-base');
@@ -517,19 +505,11 @@
         });
 
 
-        // --- Add Event Listeners for CLEAR buttons ---
-        document.getElementById('clear-1').addEventListener('click', function() { clearSectionFields('section-1'); });
-        document.getElementById('clear-2').addEventListener('click', function() { clearSectionFields('section-2'); });
-        document.getElementById('clear-3').addEventListener('click', function() { clearSectionFields('section-3'); });
-        document.getElementById('clear-4').addEventListener('click', function() { clearSectionFields('section-4'); });
-        document.getElementById('clear-5').addEventListener('click', function() { clearSectionFields('section-5'); });
-
-
         // --- Add Enter key functionality ---
         const sections = document.querySelectorAll('.calculator-section');
         sections.forEach(section => {
             const inputs = section.querySelectorAll('.input-line input[type="number"]');
-            const button = section.querySelector('.output-line button:not(.clear-btn)'); // Target CALCULATE button only
+            const button = section.querySelector('.output-line button:not(.clear-section-btn)'); // Ensure we get the Calculate button
             if(inputs.length > 0 && button){
                 inputs.forEach(input => {
                      input.addEventListener('keypress', function(event) {
@@ -541,6 +521,26 @@
                 });
             }
         });
+
+         // --- Add Clear Button Functionality ---
+        document.querySelectorAll('.clear-section-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                // Find the parent section of the clicked button
+                const section = event.target.closest('.calculator-section');
+                if (section) {
+                    // Find all number/text inputs (including readonly results) within that section
+                    section.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
+                        input.value = ''; // Clear their value
+                    });
+                    // Find all select elements within that section
+                    section.querySelectorAll('select').forEach(select => {
+                        select.selectedIndex = 0; // Reset dropdowns to the first option
+                    });
+                }
+            });
+        });
+        // --- End Clear Button Functionality ---
+
     </script>
 
     <!-- PWA: Script to Register the Service Worker (Using Absolute Path) -->
