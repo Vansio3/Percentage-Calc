@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator</title> 
+    <title>Percentage Calculator</title>
 
     <!-- PWA: Link to the Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -106,7 +106,7 @@
 
         /* Active Section Highlight */
         .calculator-section.active-section {
-             border-left: 1px solid #F2A122; /* Orange left border */
+             border-left: 1px solid #F2A122; /* UPDATED ORANGE left border */
         }
 
         /* Hidden Section Style */
@@ -192,7 +192,7 @@
         .calculator-section input[type="number"]:focus {
             outline: none;
             box-shadow: none;
-            border-color: #F2A122; /* Orange focus */
+            border-color: #F2A122; /* UPDATED ORANGE focus */
         }
 
         /* Readonly Output Fields */
@@ -230,7 +230,7 @@
         }
          .calculator-section select:focus {
             outline: none;
-            border-color: #F2A122;
+            border-color: #F2A122; /* UPDATED ORANGE focus */
             box-shadow: none;
          }
 
@@ -650,7 +650,6 @@
         <div class="modal-content">
             <button id="close-settings-btn" class="modal-close-btn" aria-label="Close settings">×</button>
             <h2 data-translate-key="settingsTitle">Settings</h2>
-            <!-- Language option moved to a button -->
             <button id="language-settings-btn" class="modal-action-btn" data-translate-key="languageMenuBtn">Language</button>
             <hr class="modal-divider">
             <button id="edit-layout-btn" class="modal-action-btn" data-translate-key="editLayoutBtn">Edit Layout</button>
@@ -723,14 +722,34 @@
         let currentLanguage = 'en'; // Default
 
         // --- Translation Function ---
-        function setLanguage(lang) { if (!translations[lang]) { console.warn(`Lang ${lang} not found.`); return; } currentLanguage = lang; localStorage.setItem('language', lang); document.documentElement.lang = lang; document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.getAttribute('data-translate-key'); if (translations[lang][key]) { if (el.tagName === 'INPUT' && el.type === 'button') { el.value = translations[lang][key]; } else if (el.tagName === 'BUTTON' || el.tagName === 'OPTION' || el.tagName === 'SPAN' || el.tagName === 'H1' || el.tagName === 'H4' || el.tagName === 'LABEL' || el.tagName === 'H2' || el.tagName === 'P') { el.textContent = translations[lang][key]; } } else { console.warn(`Key "${key}" not found for lang "${lang}".`); } }); document.querySelectorAll('.copy-btn').forEach(btn => { const baseId = btn.id.replace('copy-', ''); const resultNumber = baseId.match(/\d+/); const newLabel = translations[lang]['copyResultLabel'] + (resultNumber ? " " + resultNumber[0] : ""); btn.setAttribute('aria-label', newLabel); }); const modalRadioToCheck = document.getElementById(`modal-lang-${lang}`); if (modalRadioToCheck) { modalRadioToCheck.checked = true; } if(layoutEditorModal.style.display === 'block') { populateLayoutEditor(currentLayoutSettings); } }
+        function setLanguage(lang) { if (!translations[lang]) { console.warn(`Lang ${lang} not found.`); return; } currentLanguage = lang; localStorage.setItem('language', lang); document.documentElement.lang = lang; document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.getAttribute('data-translate-key'); if (translations[lang][key]) { if (el.tagName === 'INPUT' && el.type === 'button') { el.value = translations[lang][key]; } else if (el.tagName === 'BUTTON' || el.tagName === 'OPTION' || el.tagName === 'SPAN' || el.tagName === 'H1' || el.tagName === 'H4' || el.tagName === 'LABEL' || el.tagName === 'H2' || el.tagName === 'P') { el.textContent = translations[lang][key]; } } else { console.warn(`Key "${key}" not found for lang "${lang}".`); } }); document.querySelectorAll('.copy-btn').forEach(btn => { const baseId = btn.id.replace('copy-', ''); const resultNumber = baseId.match(/\d+/); const newLabel = translations[lang]['copyResultLabel'] + (resultNumber ? " " + resultNumber[0] : ""); btn.setAttribute('aria-label', newLabel); }); const modalRadioToCheck = document.getElementById(`modal-lang-${lang}`); if (modalRadioToCheck) { modalRadioToCheck.checked = true; } const editorIsOpen = document.getElementById('layout-editor-modal') && document.getElementById('layout-editor-modal').style.display === 'block'; if(editorIsOpen) { populateLayoutEditor(currentLayoutSettings); } }
 
         // --- Layout Configuration & Persistence ---
         const DEFAULT_LAYOUT = [ { id: 'calc-section-1', visible: true }, { id: 'calc-section-2', visible: true }, { id: 'calc-section-3', visible: true }, { id: 'calc-section-4', visible: true }, { id: 'calc-section-5', visible: true } ];
-        let currentLayoutSettings = [];
-        function saveLayoutSettings(settings) { try { localStorage.setItem('layoutSettings', JSON.stringify(settings)); } catch (e) { console.error("Save layout failed:", e); } }
-        function loadLayoutSettings() { const savedSettings = localStorage.getItem('layoutSettings'); try { const parsed = savedSettings ? JSON.parse(savedSettings) : DEFAULT_LAYOUT.map(item => ({...item})); const currentIds = parsed.map(item => item.id); const missing = DEFAULT_LAYOUT.filter(item => !currentIds.includes(item.id)).map(item => ({...item})); currentLayoutSettings = [...parsed, ...missing]; const allDefaultIds = DEFAULT_LAYOUT.map(item => item.id); currentLayoutSettings = currentLayoutSettings.filter(item => allDefaultIds.includes(item.id)); currentLayoutSettings.sort((a, b) => { const indexA = DEFAULT_LAYOUT.findIndex(item => item.id === a.id); const indexB = DEFAULT_LAYOUT.findIndex(item => item.id === b.id); return indexA - indexB; }); return currentLayoutSettings; } catch (e) { console.error("Load/parse layout failed, using default:", e); currentLayoutSettings = DEFAULT_LAYOUT.map(item => ({...item})); return currentLayoutSettings; } }
-        function applyLayout(settings) { const container = document.getElementById('calculator-container'); if (!container) return; settings.forEach(item => { const section = document.getElementById(item.id); if (section) { if (item.visible) { section.classList.remove('hidden-section'); } else { section.classList.add('hidden-section'); } } }); settings.forEach(item => { if (item.visible) { const section = document.getElementById(item.id); if (section) { container.appendChild(section); } } }); }
+        let currentLayoutSettings = []; // Global state of layout
+        function saveLayoutSettings(settings) { try { localStorage.setItem('layoutSettings', JSON.stringify(settings)); console.log("Layout saved:", settings); } catch (e) { console.error("Failed to save layout settings:", e); } }
+        function loadLayoutSettings() {
+            const savedSettingsRaw = localStorage.getItem('layoutSettings');
+            const defaultSettings = DEFAULT_LAYOUT.map(item => ({...item}));
+            let loadedSettings = [...defaultSettings];
+
+            if (savedSettingsRaw) {
+                try {
+                    const parsedSettings = JSON.parse(savedSettingsRaw);
+                    if (Array.isArray(parsedSettings)) {
+                        const defaultIds = defaultSettings.map(item => item.id);
+                        const validSavedSettings = parsedSettings.filter(item => defaultIds.includes(item.id));
+                        const validSavedIds = validSavedSettings.map(item => item.id);
+                        const missingFromSaved = defaultSettings.filter(item => !validSavedIds.includes(item.id));
+                        loadedSettings = [...validSavedSettings, ...missingFromSaved]; // Saved order first, then new defaults
+                        console.log("Loaded and merged saved settings:", loadedSettings);
+                    } else { console.warn("Saved layoutSettings not an array, using default."); loadedSettings = defaultSettings; }
+                } catch (e) { console.error("Failed to parse layout settings, using default:", e); loadedSettings = defaultSettings; }
+            } else { console.log("No saved layout settings found, using default."); }
+            currentLayoutSettings = loadedSettings; // Update global state
+            return currentLayoutSettings;
+        }
+        function applyLayout(settings) { const container = document.getElementById('calculator-container'); if (!container) return; console.log("Applying layout:", settings); settings.forEach(item => { const section = document.getElementById(item.id); if (section) { if (item.visible) { section.classList.remove('hidden-section'); } else { section.classList.add('hidden-section'); } } else { console.warn(`Section ${item.id} not found during applyLayout.`); } }); settings.forEach(item => { const section = document.getElementById(item.id); if (section) { container.appendChild(section); } }); }
 
         // --- Layout Editor Variables & Functions ---
         const layoutEditorModal = document.getElementById('layout-editor-modal'); const layoutEditorList = document.getElementById('layout-editor-list'); const editLayoutBtn = document.getElementById('edit-layout-btn'); const closeLayoutEditorBtn = document.getElementById('close-layout-editor-btn'); const saveLayoutBtn = document.getElementById('save-layout-btn'); let draggedItem = null;
@@ -745,7 +764,7 @@
         // --- Modal Control Logic (Layout Editor) ---
         editLayoutBtn.addEventListener('click', () => { settingsModal.style.display = 'none'; const settingsToEdit = loadLayoutSettings(); populateLayoutEditor(settingsToEdit); layoutEditorModal.style.display = 'block'; });
         closeLayoutEditorBtn.addEventListener('click', () => { layoutEditorModal.style.display = 'none'; });
-        saveLayoutBtn.addEventListener('click', () => { const updatedSettings = []; layoutEditorList.querySelectorAll('li').forEach(item => { const id = item.dataset.id; const checkbox = item.querySelector('input[type="checkbox"]'); updatedSettings.push({ id: id, visible: checkbox.checked }); }); currentLayoutSettings = updatedSettings; saveLayoutSettings(currentLayoutSettings); applyLayout(currentLayoutSettings); layoutEditorModal.style.display = 'none'; document.querySelectorAll('.calculator-section:not(.hidden-section)').forEach(section => { updateClearButtonVisibility(section); }); });
+        saveLayoutBtn.addEventListener('click', () => { const updatedSettings = []; layoutEditorList.querySelectorAll('li').forEach(item => { const id = item.dataset.id; const checkbox = item.querySelector('input[type="checkbox"]'); updatedSettings.push({ id: id, visible: checkbox.checked }); }); currentLayoutSettings = updatedSettings; saveLayoutSettings(currentLayoutSettings); applyLayout(currentLayoutSettings); layoutEditorModal.style.display = 'none'; document.querySelectorAll('.calculator-section').forEach(section => { if (!section.classList.contains('hidden-section')) updateClearButtonVisibility(section); else { const clearBtn = section.querySelector('.clear-section-btn'); if (clearBtn) clearBtn.style.display = 'none'; } }); });
 
        // Helper function to get float value or null if invalid/empty
         function getFloatValue(id) { const element = document.getElementById(id); if (!element || element.value.trim() === '') return null; const value = parseFloat(element.value); return isNaN(value) ? null : value; }
@@ -801,7 +820,7 @@
         const languageSettingsBtn = document.getElementById('language-settings-btn');
         const languageModal = document.getElementById('language-modal');
         const closeLanguageModalBtn = document.getElementById('close-language-modal-btn');
-        const modalLangRadios = document.querySelectorAll('input[name="modal-language"]');
+        const modalLangRadios = document.querySelectorAll('input[name="modal-language"]'); // Select radios inside language modal
 
 
         settingsBtn.addEventListener('click', () => { settingsModal.style.display = 'block'; });
@@ -830,8 +849,6 @@
             radio.addEventListener('change', (event) => {
                 if (event.target.checked) {
                     setLanguage(event.target.value);
-                    // Optionally close language modal after selection?
-                    // languageModal.style.display = 'none';
                 }
             });
         });
