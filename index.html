@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> {/* Default language, will be updated by JS */}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator (Dark, Blue)</title>
+    <title>Percentage Calculator</title> {/* Generic title */}
 
     <!-- PWA: Link to the Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -32,10 +32,11 @@
             color: #EAEAEA;
             line-height: 1.5;
             padding: 10px;
-            user-select: none; /* Standard */
-            -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE/Edge Legacy */
+            /* Disable Text Selection */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .container {
@@ -51,6 +52,7 @@
             align-items: center; /* Vertically align items */
             gap: 10px;
             flex-wrap: wrap;
+            position: relative; /* To position settings button */
         }
 
         .logo-img {
@@ -66,6 +68,28 @@
             font-weight: 600;
             flex-grow: 1;
         }
+
+        /* Generic Icon Button Style (Settings) */
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #AAAAAA;
+            font-size: 1.3em;
+            padding: 5px;
+            line-height: 1;
+            cursor: pointer;
+            margin-left: auto; /* Push to the right */
+            outline: none;
+             box-shadow: none;
+             -webkit-tap-highlight-color: transparent;
+        }
+         .icon-btn:hover, .icon-btn:focus {
+             color: #CCCCCC;
+             outline: none !important;
+             box-shadow: none !important;
+             background: none !important;
+             border: none !important;
+         }
 
         /* Calculator Section */
         .calculator-section {
@@ -95,7 +119,7 @@
             box-shadow: none;
             -webkit-tap-highlight-color: transparent;
             z-index: 2;
-            display: none; /* --- HIDE BY DEFAULT --- */
+            display: none; /* Hide by default - JS will show it */
         }
          .clear-section-btn:focus,
          .clear-section-btn:active,
@@ -114,7 +138,7 @@
             color: #AAAAAA;
             margin-bottom: 10px;
             line-height: 1.3;
-            padding-right: 25px;
+            padding-right: 25px; /* Space for clear button */
         }
 
 
@@ -275,6 +299,90 @@
             border: none !important;
         }
 
+        /* Settings Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 100; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #3A3A3A; /* Match section background */
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 25px;
+            border: 1px solid #484848;
+            border-radius: 6px;
+            width: 80%; /* Could be more dynamic */
+            max-width: 400px; /* Maximum width */
+            position: relative;
+            color: #EAEAEA;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            color: #AAAAAA;
+            font-size: 1.8em;
+            font-weight: bold;
+            line-height: 1;
+            background: none;
+            border: none;
+            padding: 0 5px;
+            cursor: pointer;
+            outline: none;
+             box-shadow: none;
+             -webkit-tap-highlight-color: transparent;
+        }
+        .modal-close-btn:hover,
+        .modal-close-btn:focus {
+            color: #FFFFFF;
+            text-decoration: none;
+            cursor: pointer;
+             outline: none !important;
+             box-shadow: none !important;
+             background: none !important;
+             border: none !important;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            color: #EAEAEA;
+        }
+
+        .setting-group {
+            margin-bottom: 15px;
+        }
+        .setting-group > label { /* Target the main group label */
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #CFCFCF;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+             accent-color: #2196f3;
+        }
+         .radio-group label { /* Target label next to radio */
+            margin-bottom: 0;
+            font-weight: normal;
+            color: #EAEAEA;
+            cursor: pointer;
+         }
+
 
         /* Larger Screens (Optional tweaks) */
         @media (min-width: 600px) {
@@ -288,21 +396,24 @@
     <div class="container">
         <header>
             <img src="icons/icon-192.png" alt="Logo" class="logo-img">
-            <h1>Percentage Calculator</h1>
+            <h1 data-translate-key="headerTitle">Percentage Calculator</h1>
+             <button id="settings-btn" class="icon-btn" aria-label="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
         </header>
 
         <!-- Calculator 1: What is X% of Y? -->
         <section class="calculator-section">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
-             <h4 class="section-description">Find Percentage of Number</h4>
+             <h4 class="section-description" data-translate-key="calc1Desc">Find Percentage of Number</h4>
             <div class="input-line">
-                <span>What is</span>
+                <span data-translate-key="calc1Label1">What is</span>
                 <input type="number" id="calc1-percent" step="any" aria-label="Percentage value">
-                <span>% of</span>
+                <span data-translate-key="calc1Label2">% of</span>
                 <input type="number" id="calc1-base" step="any" aria-label="Base value">
             </div>
             <div class="output-line">
-                <button id="calc1-btn">CALCULATE</button>
+                <button id="calc1-btn" data-translate-key="calcButton">CALCULATE</button>
                 <input type="text" id="calc1-result" readonly aria-label="Calculation result 1">
                 <button class="copy-btn" id="copy-calc1-result" aria-label="Copy result 1" style="display: none;">
                     <i class="fa-regular fa-copy"></i>
@@ -313,14 +424,14 @@
         <!-- Calculator 2: X is what percent of Y? -->
         <section class="calculator-section">
             <button class="clear-section-btn" aria-label="Clear this section">×</button>
-             <h4 class="section-description">Find Part's Percentage of Whole</h4>
+             <h4 class="section-description" data-translate-key="calc2Desc">Find Part's Percentage of Whole</h4>
              <div class="input-line">
                 <input type="number" id="calc2-part" step="any" aria-label="Part value">
-                <span>is what % of</span>
+                <span data-translate-key="calc2Label1">is what % of</span>
                 <input type="number" id="calc2-whole" step="any" aria-label="Whole value">
             </div>
             <div class="output-line">
-                 <button id="calc2-btn">CALCULATE</button>
+                 <button id="calc2-btn" data-translate-key="calcButton">CALCULATE</button>
                 <div class="result-group">
                      <input type="text" id="calc2-result" readonly aria-label="Calculation result 2">
                      <span id="calc2-percent-symbol">%</span>
@@ -334,16 +445,16 @@
         <!-- Calculator 3: Percentage Increase/Decrease from X to Y -->
         <section class="calculator-section">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
-             <h4 class="section-description">Calculate Percentage Change</h4>
+             <h4 class="section-description" data-translate-key="calc3Desc">Calculate Percentage Change</h4>
              <div class="input-line">
-                <span>% change</span>
-                <span>from</span>
+                <span data-translate-key="calc3Label1">% change</span>
+                <span data-translate-key="calc3Label2">from</span>
                 <input type="number" id="calc3-from" step="any" aria-label="Starting value">
-                <span>to</span>
+                <span data-translate-key="calc3Label3">to</span>
                 <input type="number" id="calc3-to" step="any" aria-label="Ending value">
             </div>
             <div class="output-line">
-                 <button id="calc3-btn">CALCULATE</button>
+                 <button id="calc3-btn" data-translate-key="calcButton">CALCULATE</button>
                  <div class="result-group">
                     <input type="text" id="calc3-result" readonly aria-label="Calculation result 3">
                     <span id="calc3-percent-symbol">%</span>
@@ -357,19 +468,19 @@
         <!-- Calculator 4: Increase/Decrease X by Y% -->
         <section class="calculator-section">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
-             <h4 class="section-description">Value After % Increase/Decrease</h4>
+             <h4 class="section-description" data-translate-key="calc4Desc">Value After % Increase/Decrease</h4>
              <div class="input-line">
                 <select id="calc4-operation" aria-label="Operation Type">
-                    <option value="increase">Increase</option>
-                    <option value="decrease">Decrease</option>
+                    <option value="increase" data-translate-key="increaseOpt">Increase</option>
+                    <option value="decrease" data-translate-key="decreaseOpt">Decrease</option>
                 </select>
                 <input type="number" id="calc4-base" step="any" aria-label="Base value">
-                <span>by</span>
+                <span data-translate-key="calc4Label1">by</span>
                 <input type="number" id="calc4-percent" step="any" aria-label="Percentage value">
                  <span>%</span>
             </div>
             <div class="output-line">
-                 <button id="calc4-btn">CALCULATE</button>
+                 <button id="calc4-btn" data-translate-key="calcButton">CALCULATE</button>
                  <input type="text" id="calc4-result" readonly aria-label="Calculation result 4">
                   <button class="copy-btn" id="copy-calc4-result" aria-label="Copy result 4" style="display: none;">
                     <i class="fa-regular fa-copy"></i>
@@ -380,20 +491,20 @@
         <!-- Calculator 5: Reverse Percentage (Find Original) -->
         <section class="calculator-section">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
-             <h4 class="section-description">Find Original Value (Reverse %)</h4>
+             <h4 class="section-description" data-translate-key="calc5Desc">Find Original Value (Reverse %)</h4>
              <div class="input-line">
                 <input type="number" id="calc5-final" step="any" aria-label="Final value">
-                <span>is</span>
+                <span data-translate-key="calc5Label1">is</span>
                 <input type="number" id="calc5-percent" step="any" aria-label="Percentage value">
                 <span>%</span>
                  <select id="calc5-operation" aria-label="Operation Type">
-                    <option value="more">more than</option>
-                    <option value="less">less than</option>
+                    <option value="more" data-translate-key="moreThanOpt">more than</option>
+                    <option value="less" data-translate-key="lessThanOpt">less than</option>
                 </select>
-                 <span>what?</span>
+                 <span data-translate-key="calc5Label2">what?</span>
             </div>
             <div class="output-line">
-                 <button id="calc5-btn">CALCULATE</button>
+                 <button id="calc5-btn" data-translate-key="calcButton">CALCULATE</button>
                  <input type="text" id="calc5-result" readonly aria-label="Calculation result 5 (Original Value)">
                  <button class="copy-btn" id="copy-calc5-result" aria-label="Copy result 5" style="display: none;">
                     <i class="fa-regular fa-copy"></i>
@@ -402,265 +513,246 @@
         </section>
         <!-- End Calculator Sections -->
 
+    </div> <!-- End .container -->
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <button id="close-settings-btn" class="modal-close-btn" aria-label="Close settings">×</button>
+            <h2 data-translate-key="settingsTitle">Settings</h2>
+            <div class="setting-group">
+                <label data-translate-key="langLabel">Language:</label>
+                <div class="radio-group">
+                    <input type="radio" id="lang-en" name="language" value="en">
+                    <label for="lang-en">English</label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="lang-bg" name="language" value="bg">
+                    <label for="lang-bg">Български</label> <!-- Bulgarian -->
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- End Settings Modal -->
+
 
     <!-- Calculator Logic Script -->
     <script>
+        // --- Translation Data ---
+        const translations = {
+            en: {
+                headerTitle: "Percentage Calculator",
+                calc1Desc: "Find Percentage of Number",
+                calc1Label1: "What is",
+                calc1Label2: "% of",
+                calc2Desc: "Find Part's Percentage of Whole",
+                calc2Label1: "is what % of",
+                calc3Desc: "Calculate Percentage Change",
+                calc3Label1: "% change",
+                calc3Label2: "from",
+                calc3Label3: "to",
+                calc4Desc: "Value After % Increase/Decrease",
+                increaseOpt: "Increase",
+                decreaseOpt: "Decrease",
+                calc4Label1: "by",
+                calc5Desc: "Find Original Value (Reverse %)",
+                calc5Label1: "is",
+                moreThanOpt: "more than",
+                lessThanOpt: "less than",
+                calc5Label2: "what?",
+                calcButton: "CALCULATE",
+                settingsTitle: "Settings",
+                langLabel: "Language:",
+                copyResultLabel: "Copy result" // Generic label for aria
+            },
+            bg: {
+                headerTitle: "Процентен Калкулатор",
+                calc1Desc: "Намиране на процент от число",
+                calc1Label1: "Колко е",
+                calc1Label2: "% от",
+                calc2Desc: "Какъв процент е част от цяло",
+                calc2Label1: "е какъв % от",
+                calc3Desc: "Изчисляване на процентна промяна",
+                calc3Label1: "% промяна",
+                calc3Label2: "от",
+                calc3Label3: "до",
+                calc4Desc: "Стойност след % увеличение/намаление",
+                increaseOpt: "Увеличение",
+                decreaseOpt: "Намаление",
+                calc4Label1: "с",
+                calc5Desc: "Намиране на оригинална стойност (Обратно %)",
+                calc5Label1: "е",
+                moreThanOpt: "повече от",
+                lessThanOpt: "по-малко от",
+                calc5Label2: "колко?",
+                calcButton: "ИЗЧИСЛИ",
+                settingsTitle: "Настройки",
+                langLabel: "Език:",
+                copyResultLabel: "Копирай резултата"
+            }
+        };
+
+        let currentLanguage = 'en'; // Default
+
+        // --- Translation Function ---
+        function setLanguage(lang) {
+            if (!translations[lang]) {
+                console.warn(`Language ${lang} not found.`);
+                return;
+            }
+            currentLanguage = lang;
+            localStorage.setItem('language', lang); // Save preference
+            document.documentElement.lang = lang; // Set page language attribute
+
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (translations[lang][key]) {
+                     if (element.tagName === 'INPUT' && element.type === 'button') {
+                         element.value = translations[lang][key];
+                     } else if (element.tagName === 'BUTTON' || element.tagName === 'OPTION' || element.tagName === 'SPAN' || element.tagName === 'H1' || element.tagName === 'H4' || element.tagName === 'LABEL' || element.tagName === 'H2') {
+                        element.textContent = translations[lang][key];
+                    }
+                } else {
+                     console.warn(`Translation key "${key}" not found for language "${lang}".`);
+                }
+            });
+
+             document.querySelectorAll('.copy-btn').forEach(btn => {
+                 const baseId = btn.id.replace('copy-', '');
+                 const newLabel = translations[lang]['copyResultLabel'] + " " + baseId.replace('calc', '').replace('-result','');
+                 btn.setAttribute('aria-label', newLabel);
+             });
+
+            const radioToCheck = document.getElementById(`lang-${lang}`);
+            if (radioToCheck) {
+                radioToCheck.checked = true;
+            }
+        }
+
+
        // Helper function to get float value or null if invalid/empty
         function getFloatValue(id) {
             const element = document.getElementById(id);
-            if (!element || element.value.trim() === '') {
-                return null;
-            }
+            if (!element || element.value.trim() === '') return null;
             const value = parseFloat(element.value);
             return isNaN(value) ? null : value;
         }
 
         // Helper function to display result or error
         function displayResult(id, value) {
-            const element = document.getElementById(id);
-            const copyBtnId = 'copy-' + id;
-            const copyBtn = document.getElementById(copyBtnId);
-            let showCopyBtn = false;
-
-            if (element) {
-                if (value === null || typeof value === 'undefined' || value === '') {
-                    element.value = '';
-                } else if (typeof value === 'string' && isNaN(parseFloat(value)) && value !== '0' ) {
-                    element.value = value;
-                } else if (typeof value === 'number' || (typeof value === 'string' && !isNaN(parseFloat(value))) ) {
-                    element.value = parseFloat(Number(value).toFixed(4)).toString();
-                    showCopyBtn = true;
-                } else {
+             const element = document.getElementById(id);
+             const copyBtnId = 'copy-' + id;
+             const copyBtn = document.getElementById(copyBtnId);
+             let showCopyBtn = false;
+             if (element) {
+                 if (value === null || typeof value === 'undefined' || value === '') {
                      element.value = '';
-                }
-            }
-
-            if (copyBtn) {
-                copyBtn.style.display = showCopyBtn ? 'inline-block' : 'none';
-            }
-        }
+                 } else if (typeof value === 'string' && isNaN(parseFloat(value)) && value !== '0') {
+                     element.value = value;
+                 } else if (typeof value === 'number' || (typeof value === 'string' && !isNaN(parseFloat(value)))) {
+                     element.value = parseFloat(Number(value).toFixed(4)).toString();
+                     showCopyBtn = true;
+                 } else { element.value = ''; }
+             }
+             if (copyBtn) { copyBtn.style.display = showCopyBtn ? 'inline-block' : 'none'; }
+         }
 
         // Helper Function to Check Section Input State
         function checkSectionHasInput(sectionElement) {
-            if (!sectionElement) return false;
-            const numberInputs = sectionElement.querySelectorAll('.input-line input[type="number"]'); // Check only inputs in input line
-            for (const input of numberInputs) {
-                if (input.value.trim() !== '') return true;
-            }
-            const selectInputs = sectionElement.querySelectorAll('.input-line select'); // Check only selects in input line
-            for (const select of selectInputs) {
-                if (select.selectedIndex !== 0) return true;
-            }
-            return false;
-        }
+             if (!sectionElement) return false;
+             const numberInputs = sectionElement.querySelectorAll('.input-line input[type="number"]');
+             for (const input of numberInputs) { if (input.value.trim() !== '') return true; }
+             const selectInputs = sectionElement.querySelectorAll('.input-line select');
+             for (const select of selectInputs) { if (select.selectedIndex !== 0) return true; }
+             return false;
+         }
 
         // Function to Update Clear Button Visibility
         function updateClearButtonVisibility(sectionElement) {
-            if (!sectionElement) return;
-            const clearButton = sectionElement.querySelector('.clear-section-btn');
-            if (clearButton) {
-                clearButton.style.display = checkSectionHasInput(sectionElement) ? 'block' : 'none';
-            }
-        }
+             if (!sectionElement) return;
+             const clearButton = sectionElement.querySelector('.clear-section-btn');
+             if (clearButton) { clearButton.style.display = checkSectionHasInput(sectionElement) ? 'block' : 'none'; }
+         }
+
 
         // --- Calculator Logic Functions ---
-        function calculatePercentageOf(percent, base) {
-            return (percent / 100) * base;
-        }
-
-        function calculateWhatPercent(part, whole) {
-            if (whole === 0) return 'Cannot divide by zero';
-            return (part / whole) * 100;
-        }
-
-        function calculatePercentChange(fromValue, toValue) {
-            if (fromValue === 0) {
-                return toValue === 0 ? 0 : 'Change from zero undefined';
-            }
-            const change = toValue - fromValue;
-            return (change / Math.abs(fromValue)) * 100;
-        }
-
-        function calculateValueChange(operation, base, percent) {
-             const numBase = Number(base);
-             const numPercent = Number(percent);
-             if (isNaN(numBase) || isNaN(numPercent)){
-                 return 'Invalid input';
-             }
-            const changeAmount = (numPercent / 100) * numBase;
-            if (operation === 'increase') {
-                return numBase + changeAmount;
-            } else if (operation === 'decrease') {
-                return numBase - changeAmount;
-            } else { return null; }
-        }
-
-        function calculateReversePercentage(finalValue, percent, operation) {
-            const numFinal = Number(finalValue);
-            const numPercent = Number(percent);
-            if (isNaN(numFinal) || isNaN(numPercent)) return 'Invalid input';
-            if (numPercent < 0) return 'Percentage cannot be negative';
-
-            let originalValue;
-            const percentAsDecimal = numPercent / 100;
-
-            if (operation === 'more') {
-                 if (1 + percentAsDecimal === 0) return 'Calculation error';
-                originalValue = numFinal / (1 + percentAsDecimal);
-            } else if (operation === 'less') {
-                if (percentAsDecimal >= 1) {
-                     if (numFinal === 0 && percentAsDecimal === 1) return 0;
-                     return 'Cannot be 100% or more less';
-                }
-                 if (1 - percentAsDecimal === 0) return 'Calculation error (div by zero)';
-                originalValue = numFinal / (1 - percentAsDecimal);
-            } else { return null; }
-            return originalValue;
-        }
+        function calculatePercentageOf(percent, base) { return (percent / 100) * base; }
+        function calculateWhatPercent(part, whole) { if (whole === 0) return 'Cannot divide by zero'; return (part / whole) * 100; }
+        function calculatePercentChange(fromValue, toValue) { if (fromValue === 0) return toValue === 0 ? 0 : 'Change from zero undefined'; const change = toValue - fromValue; return (change / Math.abs(fromValue)) * 100; }
+        function calculateValueChange(operation, base, percent) { const numBase = Number(base); const numPercent = Number(percent); if (isNaN(numBase) || isNaN(numPercent)) return 'Invalid input'; const changeAmount = (numPercent / 100) * numBase; if (operation === 'increase') return numBase + changeAmount; else if (operation === 'decrease') return numBase - changeAmount; else return null; }
+        function calculateReversePercentage(finalValue, percent, operation) { const numFinal = Number(finalValue); const numPercent = Number(percent); if (isNaN(numFinal) || isNaN(numPercent)) return 'Invalid input'; if (numPercent < 0) return 'Percentage cannot be negative'; let originalValue; const percentAsDecimal = numPercent / 100; if (operation === 'more') { if (1 + percentAsDecimal === 0) return 'Calculation error'; originalValue = numFinal / (1 + percentAsDecimal); } else if (operation === 'less') { if (percentAsDecimal >= 1) { if (numFinal === 0 && percentAsDecimal === 1) return 0; return 'Cannot be 100% or more less'; } if (1 - percentAsDecimal === 0) return 'Calculation error (div by zero)'; originalValue = numFinal / (1 - percentAsDecimal); } else { return null; } return originalValue; }
 
 
         // --- Event Listeners for Calculate Buttons ---
-        document.getElementById('calc1-btn').addEventListener('click', function() {
-             const percent = getFloatValue('calc1-percent');
-             const base = getFloatValue('calc1-base');
-             displayResult('calc1-result', '');
-             if(percent === null || base === null) return;
-             displayResult('calc1-result', calculatePercentageOf(percent, base));
-        });
-        document.getElementById('calc2-btn').addEventListener('click', function() {
-            const part = getFloatValue('calc2-part');
-             const whole = getFloatValue('calc2-whole');
-             displayResult('calc2-result', '');
-             if(part === null || whole === null) return;
-             displayResult('calc2-result', calculateWhatPercent(part, whole));
-        });
-        document.getElementById('calc3-btn').addEventListener('click', function() {
-            const fromValue = getFloatValue('calc3-from');
-             const toValue = getFloatValue('calc3-to');
-             displayResult('calc3-result', '');
-             if(fromValue === null || toValue === null) return;
-             displayResult('calc3-result', calculatePercentChange(fromValue, toValue));
-        });
-        document.getElementById('calc4-btn').addEventListener('click', function() {
-            const operation = document.getElementById('calc4-operation').value;
-            const base = getFloatValue('calc4-base');
-            const percent = getFloatValue('calc4-percent');
-            displayResult('calc4-result', '');
-            if (base === null || percent === null) return;
-             const result = calculateValueChange(operation, base, percent);
-             displayResult('calc4-result', result);
-        });
-        document.getElementById('calc5-btn').addEventListener('click', function() {
-            const finalValue = getFloatValue('calc5-final');
-            const percent = getFloatValue('calc5-percent');
-            const operation = document.getElementById('calc5-operation').value;
-            displayResult('calc5-result', '');
-            if (finalValue === null || percent === null) return;
-            const result = calculateReversePercentage(finalValue, percent, operation);
-            displayResult('calc5-result', result);
-        });
+         document.getElementById('calc1-btn').addEventListener('click', function() { const percent = getFloatValue('calc1-percent'); const base = getFloatValue('calc1-base'); displayResult('calc1-result', ''); if(percent === null || base === null) return; displayResult('calc1-result', calculatePercentageOf(percent, base)); });
+         document.getElementById('calc2-btn').addEventListener('click', function() { const part = getFloatValue('calc2-part'); const whole = getFloatValue('calc2-whole'); displayResult('calc2-result', ''); if(part === null || whole === null) return; displayResult('calc2-result', calculateWhatPercent(part, whole)); });
+         document.getElementById('calc3-btn').addEventListener('click', function() { const fromValue = getFloatValue('calc3-from'); const toValue = getFloatValue('calc3-to'); displayResult('calc3-result', ''); if(fromValue === null || toValue === null) return; displayResult('calc3-result', calculatePercentChange(fromValue, toValue)); });
+         document.getElementById('calc4-btn').addEventListener('click', function() { const operation = document.getElementById('calc4-operation').value; const base = getFloatValue('calc4-base'); const percent = getFloatValue('calc4-percent'); displayResult('calc4-result', ''); if (base === null || percent === null) return; const result = calculateValueChange(operation, base, percent); displayResult('calc4-result', result); });
+         document.getElementById('calc5-btn').addEventListener('click', function() { const finalValue = getFloatValue('calc5-final'); const percent = getFloatValue('calc5-percent'); const operation = document.getElementById('calc5-operation').value; displayResult('calc5-result', ''); if (finalValue === null || percent === null) return; const result = calculateReversePercentage(finalValue, percent, operation); displayResult('calc5-result', result); });
 
 
         // --- Add Enter key functionality ---
-        const sections = document.querySelectorAll('.calculator-section');
-        sections.forEach(section => {
-            const inputs = section.querySelectorAll('.input-line input[type="number"]');
-            const button = section.querySelector('.output-line button:not(.clear-section-btn):not(.copy-btn)');
-            if(inputs.length > 0 && button){
-                inputs.forEach(input => {
-                     input.addEventListener('keypress', function(event) {
-                        if (event.key === 'Enter') {
-                             event.preventDefault();
-                             button.click();
-                        }
-                    });
-                });
-            }
-        });
+         const sections = document.querySelectorAll('.calculator-section'); sections.forEach(section => { const inputs = section.querySelectorAll('.input-line input[type="number"]'); const button = section.querySelector('.output-line button:not(.clear-section-btn):not(.copy-btn)'); if(inputs.length > 0 && button){ inputs.forEach(input => { input.addEventListener('keypress', function(event) { if (event.key === 'Enter') { event.preventDefault(); button.click(); } }); }); } });
+
 
          // --- Add Clear Button Functionality ---
-        document.querySelectorAll('.clear-section-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const section = event.target.closest('.calculator-section');
-                if (section) {
-                    section.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
-                        input.value = '';
-                    });
-                    section.querySelectorAll('select').forEach(select => {
-                        select.selectedIndex = 0;
-                    });
-                    section.querySelectorAll('.copy-btn').forEach(copyBtn => {
-                        copyBtn.style.display = 'none';
-                    });
-                    // Re-check state to hide the clear button itself
-                    updateClearButtonVisibility(section);
-                }
-            });
-        });
-        // --- End Clear Button Functionality ---
+          document.querySelectorAll('.clear-section-btn').forEach(button => { button.addEventListener('click', (event) => { const section = event.target.closest('.calculator-section'); if (section) { section.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => { input.value = ''; }); section.querySelectorAll('select').forEach(select => { select.selectedIndex = 0; }); section.querySelectorAll('.copy-btn').forEach(copyBtn => { copyBtn.style.display = 'none'; }); updateClearButtonVisibility(section); } }); });
 
 
         // --- Add Copy Button Functionality ---
-        document.querySelectorAll('.copy-btn').forEach(button => {
-            button.addEventListener('click', async (event) => {
-                const btn = event.target.closest('.copy-btn');
-                const outputLine = btn.closest('.output-line');
-                if (!outputLine) return;
-                const resultInput = outputLine.querySelector('input[readonly]');
-                if (resultInput && resultInput.value) {
-                    try {
-                        await navigator.clipboard.writeText(resultInput.value);
-                        const icon = btn.querySelector('i');
-                        if (icon) {
-                            const originalIconClass = icon.className;
-                            icon.className = 'fa-solid fa-check'; // Change to checkmark
-                            setTimeout(() => {
-                                icon.className = originalIconClass; // Change back
-                            }, 1500);
-                        }
-                        console.log('Result copied to clipboard!');
-                    } catch (err) {
-                        console.error('Failed to copy text: ', err);
-                    }
-                }
-            });
-        });
-        // --- End Copy Button Functionality ---
+         document.querySelectorAll('.copy-btn').forEach(button => { button.addEventListener('click', async (event) => { const btn = event.target.closest('.copy-btn'); const outputLine = btn.closest('.output-line'); if (!outputLine) return; const resultInput = outputLine.querySelector('input[readonly]'); if (resultInput && resultInput.value) { try { await navigator.clipboard.writeText(resultInput.value); const icon = btn.querySelector('i'); if (icon) { const originalIconClass = icon.className; icon.className = 'fa-solid fa-check'; setTimeout(() => { icon.className = originalIconClass; }, 1500); } console.log('Result copied!'); } catch (err) { console.error('Copy failed: ', err); } } }); });
 
 
          // --- Add Input/Change Listeners to Sections for Clear Button ---
-        document.querySelectorAll('.calculator-section').forEach(section => {
-            section.addEventListener('input', (event) => {
-                if (event.target.matches('.input-line input[type="number"]')) {
-                    updateClearButtonVisibility(section);
-                }
-            });
-            section.addEventListener('change', (event) => {
-                if (event.target.matches('.input-line select')) {
-                    updateClearButtonVisibility(section);
+          document.querySelectorAll('.calculator-section').forEach(section => { section.addEventListener('input', (event) => { if (event.target.matches('.input-line input[type="number"]')) { updateClearButtonVisibility(section); } }); section.addEventListener('change', (event) => { if (event.target.matches('.input-line select')) { updateClearButtonVisibility(section); } }); });
+
+
+        // --- Settings Modal Logic ---
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsBtn = document.getElementById('close-settings-btn');
+        const langRadios = document.querySelectorAll('input[name="language"]');
+
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'block';
+            const currentLangRadio = document.getElementById(`lang-${currentLanguage}`);
+            if(currentLangRadio) currentLangRadio.checked = true;
+        });
+
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        langRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                if (event.target.checked) {
+                    setLanguage(event.target.value);
                 }
             });
         });
-        // --- End Input/Change Listeners ---
+
+        // --- Initial Language Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('language');
+            const initialLang = savedLang && translations[savedLang] ? savedLang : 'en';
+            setLanguage(initialLang);
+             // Initialize clear button visibility on load
+            document.querySelectorAll('.calculator-section').forEach(section => {
+                updateClearButtonVisibility(section);
+            });
+        });
 
 
     </script>
 
     <!-- PWA: Script to Register the Service Worker (Using Absolute Path) -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/Percentage-Calc/service-worker.js')
-            .then(registration => {
-              console.log('Service Worker registered successfully with scope:', registration.scope);
-            })
-            .catch(error => {
-              console.error('Service Worker registration failed:', error);
-            });
-        });
-      }
-    </script>
+     <script> if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/Percentage-Calc/service-worker.js') .then(registration => { console.log('SW registered: ', registration.scope); }) .catch(error => { console.error('SW registration failed: ', error); }); }); } </script>
 
 </body>
 </html>
