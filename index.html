@@ -71,7 +71,7 @@
             position: relative; /* Needed for absolute positioning of clear button */
         }
 
-        /* NEW: Clear Button Styling */
+        /* Clear Button Styling */
         .clear-section-btn {
             position: absolute;
             top: 8px; /* Adjust position as needed */
@@ -89,11 +89,10 @@
             -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
             z-index: 2; /* Ensure it's above description */
         }
-        /* Prevent any focus/active styling */
          .clear-section-btn:focus,
          .clear-section-btn:active,
-         .clear-section-btn:hover { /* Add hover to prevent default browser hover styles */
-             outline: none !important; /* Use !important cautiously if needed */
+         .clear-section-btn:hover {
+             outline: none !important;
              box-shadow: none !important;
              background: none !important;
              color: #AAAAAA !important; /* Maintain color */
@@ -102,12 +101,12 @@
 
         /* Section Description Styling */
         .section-description {
-            font-size: 0.85em; /* Smaller than labels */
-            font-weight: 600; /* Semi-bold */
-            color: #AAAAAA; /* Lighter grey */
-            margin-bottom: 10px; /* Space below description */
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #AAAAAA;
+            margin-bottom: 10px;
             line-height: 1.3;
-            padding-right: 25px; /* Add padding so text doesn't overlap button */
+            padding-right: 25px;
         }
 
 
@@ -131,6 +130,7 @@
             width: 85px;
             flex-shrink: 0;
             padding: 8px 10px;
+            /* Base border color */
             border: 1px solid #2196f3;
             background-color: #2D2D2D;
             color: #EAEAEA;
@@ -138,12 +138,25 @@
             font-size: 0.95em;
             appearance: textfield;
             -moz-appearance: textfield;
+            /* Add transition for smoother color change */
+            transition: border-color 0.2s ease-in-out;
         }
         .calculator-section input[type=number]::-webkit-inner-spin-button,
         .calculator-section input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
+
+        /* --- UPDATED: Style for number inputs when focused --- */
+        .calculator-section input[type="number"]:focus {
+            /* Remove default browser focus outline */
+            outline: none;
+            /* Remove potential box-shadow focus */
+            box-shadow: none;
+            /* Change border color to orange */
+            border-color: #FF9800; /* Material Design Orange 500 */
+        }
+        /* --- End Focus Style --- */
 
         /* Readonly Output Fields */
         .calculator-section input[readonly] {
@@ -171,7 +184,7 @@
             border-radius: 4px;
             font-size: 0.95em;
             flex-shrink: 0;
-            width: auto; /* Use auto width */
+            width: auto;
         }
 
         /* Labels and Text */
@@ -509,7 +522,7 @@
         const sections = document.querySelectorAll('.calculator-section');
         sections.forEach(section => {
             const inputs = section.querySelectorAll('.input-line input[type="number"]');
-            const button = section.querySelector('.output-line button:not(.clear-section-btn)'); // Ensure we get the Calculate button
+            const button = section.querySelector('.output-line button:not(.clear-section-btn)');
             if(inputs.length > 0 && button){
                 inputs.forEach(input => {
                      input.addEventListener('keypress', function(event) {
@@ -525,16 +538,13 @@
          // --- Add Clear Button Functionality ---
         document.querySelectorAll('.clear-section-btn').forEach(button => {
             button.addEventListener('click', (event) => {
-                // Find the parent section of the clicked button
                 const section = event.target.closest('.calculator-section');
                 if (section) {
-                    // Find all number/text inputs (including readonly results) within that section
                     section.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
-                        input.value = ''; // Clear their value
+                        input.value = '';
                     });
-                    // Find all select elements within that section
                     section.querySelectorAll('select').forEach(select => {
-                        select.selectedIndex = 0; // Reset dropdowns to the first option
+                        select.selectedIndex = 0;
                     });
                 }
             });
