@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en"> {/* Default language, will be updated by JS */}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator</title>
+    <title>Percentage Calculator</title> {/* Generic title */}
 
     <!-- PWA: Link to the Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -97,24 +97,18 @@
             padding: 12px;
             margin-bottom: 15px;
             border-radius: 6px;
-            /* REMOVE default border */
-            /* border: 1px solid #484848; */
-            border: none; /* Remove all borders by default */
-            /* ADD transparent left border to reserve space */
-            border-left: 1px solid transparent;
+            /* border: 1px solid #484848; */ /* Default border removed */
+            border: none;
+            border-left: 1px solid transparent; /* Reserve space */
             overflow: hidden;
             position: relative;
-            /* Update transition to target border-left-color */
-            transition: border-left-color 0.2s ease-in-out;
+            transition: border-left-color 0.2s ease-in-out; /* Target left border */
         }
 
-        /* --- NEW: Active Section Highlight --- */
+        /* Active Section Highlight */
         .calculator-section.active-section {
-             /* Set only the left border color/style */
-             border-left: 3px solid #FF9800; /* Orange left border */
-             /* REMOVE border-color: #FF9800; */
+             border-left: 1px solid #F2A122; /* UPDATED ORANGE */
         }
-        /* --- End Active Section Highlight --- */
 
         /* Clear Button Styling */
         .clear-section-btn {
@@ -193,7 +187,7 @@
         .calculator-section input[type="number"]:focus {
             outline: none;
             box-shadow: none;
-            border-color: #FF9800; /* Orange focus */
+            border-color: #F2A122; /* UPDATED ORANGE */
         }
 
         /* Readonly Output Fields */
@@ -231,7 +225,7 @@
         }
          .calculator-section select:focus {
             outline: none;
-            border-color: #FF9800;
+            border-color: #F2A122; /* UPDATED ORANGE */
             box-shadow: none;
          }
 
