@@ -119,9 +119,12 @@
              border: 1px solid #555;
         }
 
-        /* Select Dropdown Styling */
+        /* Select Dropdown Styling - UPDATED */
         .calculator-section select {
-            padding: 8px 10px; /* Match input padding */
+            padding: 6px 8px; /* Reduced padding */
+            appearance: none; /* Standard: Remove default arrow */
+            -webkit-appearance: none; /* Chrome, Safari, Edge */
+            -moz-appearance: none; /* Firefox */
             border: 1px solid #2196f3; /* Match input border color */
             background-color: #2D2D2D; /* Match input background */
             color: #EAEAEA; /* Match input text color */
@@ -129,7 +132,8 @@
             font-size: 0.95em; /* Match input font-size */
             flex-shrink: 0; /* Prevent shrinking */
             min-width: 100px; /* Give it some base width */
-             /* Note: Full cross-browser appearance reset might need more specific rules or background images */
+            /* If text gets cut off in Firefox, uncomment below */
+            /* padding-right: 15px; */
         }
 
         /* Labels and Text */
@@ -361,7 +365,6 @@
             }
         }
 
-        // --- NEW Calculator Logic Function for Reverse Percentage ---
         function calculateReversePercentage(finalValue, percent, operation) {
             const numFinal = Number(finalValue);
             const numPercent = Number(percent);
@@ -440,7 +443,6 @@
              displayResult('calc4-result', result);
         });
 
-        // --- Add Event Listener for Calc 5 ---
         document.getElementById('calc5-btn').addEventListener('click', function() {
             const finalValue = getFloatValue('calc5-final');
             const percent = getFloatValue('calc5-percent');
@@ -449,7 +451,7 @@
             displayResult('calc5-result', ''); // Clear first
 
             if (finalValue === null || percent === null) {
-                return; // Don't calculate if inputs are missing
+                return;
             }
 
             const result = calculateReversePercentage(finalValue, percent, operation);
