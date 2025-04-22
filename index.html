@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator</title>
+    <title>Percentage Calculator</title> 
 
     <!-- PWA: Link to the Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -396,7 +396,7 @@
     <div class="container">
         <header>
             <img src="icons/icon-192.png" alt="Logo" class="logo-img">
-            <h1 data-translate-key="headerTitle">Percentage Calculator</h1>
+            <h1 data-translate-key="headerTitle">Calculator</h1> 
              <button id="settings-btn" class="icon-btn" aria-label="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
@@ -541,7 +541,7 @@
         // --- Translation Data ---
         const translations = {
             en: {
-                headerTitle: "Percentage Calculator",
+                headerTitle: "Calculator", // <-- UPDATED
                 calc1Desc: "Find Percentage of Number",
                 calc1Label1: "What is",
                 calc1Label2: "% of",
@@ -566,7 +566,7 @@
                 copyResultLabel: "Copy result" // Generic label for aria
             },
             bg: {
-                headerTitle: "Процентен Калкулатор",
+                headerTitle: "Калкулатор", // <-- UPDATED
                 calc1Desc: "Намиране на процент от число",
                 calc1Label1: "Колко е",
                 calc1Label2: "% от",
@@ -619,7 +619,8 @@
 
              document.querySelectorAll('.copy-btn').forEach(btn => {
                  const baseId = btn.id.replace('copy-', '');
-                 const newLabel = translations[lang]['copyResultLabel'] + " " + baseId.replace('calc', '').replace('-result','');
+                 const resultNumber = baseId.match(/\d+/); // Extract number from ID like 'calc1-result'
+                 const newLabel = translations[lang]['copyResultLabel'] + (resultNumber ? " " + resultNumber[0] : "");
                  btn.setAttribute('aria-label', newLabel);
              });
 
