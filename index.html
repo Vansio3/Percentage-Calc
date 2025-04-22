@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator (Dark, Fixed Width)</title>
+    <title>Percentage Calculator (Dark, Blue)</title>
 
-    <!-- PWA: Link to the Web App Manifest (Using user's relative path) -->
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA: Link to the Web App Manifest -->
+    <link rel="manifest" href="manifest.json"> <!-- Kept relative as per your last change -->
 
-    <!-- PWA: Set theme color for browser UI -->
+    <!-- PWA: Set theme color for browser UI (Can update this too if desired) -->
     <meta name="theme-color" content="#2D2D2D">
 
     <style>
@@ -41,20 +41,18 @@
         header {
             margin-bottom: 20px;
             display: flex;
-            align-items: center;
+            align-items: center; /* Vertically align items */
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .logo {
-            font-size: 1.8em;
-            font-weight: bold;
-            background-color: #444;  /* Darker Gray Background */
-            color: #8FBABA; /* Muted Pastel Teal/Cyan Text */
-            padding: 2px 8px;
-            border-radius: 4px;
-            line-height: 1;
-            flex-shrink: 0;
+        /* Styles for the new image logo */
+        .logo-img {
+            display: block; /* Prevents extra space below image */
+            width: 36px;    /* Adjust size as needed */
+            height: 36px;   /* Adjust size as needed */
+            flex-shrink: 0; /* Prevent shrinking */
+            /* Removed background, color, font, padding etc from old .logo */
         }
 
         h1 {
@@ -94,7 +92,8 @@
             width: 85px;
             flex-shrink: 0;
             padding: 8px 10px;
-            border: 1px solid #6A8D8D;
+            /* --- NEW COLOR --- */
+            border: 1px solid #2196f3; /* Blue border */
             background-color: #2D2D2D;
             color: #EAEAEA;
             border-radius: 4px;
@@ -112,7 +111,7 @@
         .calculator-section input[readonly] {
             background-color: #444;
             cursor: default;
-            border-color: #555;
+            border-color: #555; /* Keep border distinct dark gray */
              flex-grow: 1;
              min-width: 50px;
              padding: 8px 10px;
@@ -152,7 +151,8 @@
         /* Buttons */
         .calculator-section button {
             padding: 9px 14px;
-            background-color: #5D9C9C;
+            /* --- NEW COLOR --- */
+            background-color: #2196f3; /* Blue background */
             color: #FFFFFF;
             border: none;
             border-radius: 4px;
@@ -163,7 +163,10 @@
             flex-shrink: 0;
             white-space: nowrap;
         }
-        .calculator-section button:hover { background-color: #4A7C7C; }
+        .calculator-section button:hover {
+             /* --- NEW COLOR --- */
+            background-color: #1976D2; /* Darker blue on hover */
+        }
 
 
         /* Larger Screens (Optional tweaks) */
@@ -177,11 +180,12 @@
 
     <div class="container">
         <header>
-            <div class="logo">%</div>
+            <!-- --- UPDATED LOGO --- -->
+            <img src="icons/icon-192.png" alt="Logo" class="logo-img">
             <h1>Percentage Calculator</h1>
         </header>
 
-        <!-- Calculator Sections -->
+        <!-- Calculator Sections (No change needed here) -->
         <section class="calculator-section">
             <div class="input-line">
                 <span>What is</span>
@@ -230,7 +234,7 @@
 
     </div>
 
-    <!-- Calculator Logic Script -->
+    <!-- Calculator Logic Script (No change needed here) -->
     <script>
        // Helper function to get float value or null if invalid/empty
         function getFloatValue(id) {
@@ -322,11 +326,10 @@
         });
     </script>
 
-    <!-- PWA: Script to Register the Service Worker (Using Absolute Path - Safer) -->
+    <!-- PWA: Script to Register the Service Worker (Using Absolute Path) -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Use the absolute path from the domain root for robustness
           navigator.serviceWorker.register('/Percentage-Calc/service-worker.js')
             .then(registration => {
               console.log('Service Worker registered successfully with scope:', registration.scope);
