@@ -106,7 +106,7 @@
 
         /* Active Section Highlight */
         .calculator-section.active-section {
-             border-left: 1px solid #F2A122; /* UPDATED ORANGE left border */
+             border-left: 1px solid #F2A122; /* Orange left border */
         }
 
         /* Hidden Section Style */
@@ -192,7 +192,7 @@
         .calculator-section input[type="number"]:focus {
             outline: none;
             box-shadow: none;
-            border-color: #F2A122; /* UPDATED ORANGE focus */
+            border-color: #F2A122; /* Orange focus */
         }
 
         /* Readonly Output Fields */
@@ -230,7 +230,7 @@
         }
          .calculator-section select:focus {
             outline: none;
-            border-color: #F2A122; /* UPDATED ORANGE focus */
+            border-color: #F2A122;
             box-shadow: none;
          }
 
@@ -402,7 +402,7 @@
             border-top: 1px solid #484848;
             margin: 20px 0;
         }
-        button.modal-action-btn { /* Style for Edit Layout / Save Layout buttons */
+        button.modal-action-btn { /* Style for Edit Layout / Language / Save Layout buttons */
              display: block;
              width: 100%;
              padding: 10px 15px;
@@ -413,8 +413,14 @@
              border-radius: 4px;
              font-size: 1em;
              cursor: pointer;
+             text-align: center; /* Ensure text is centered */
              transition: background-color 0.2s ease;
         }
+        /* Add margin between modal action buttons */
+        #settings-modal .modal-action-btn + .modal-action-btn {
+             margin-top: 10px;
+        }
+
         button.modal-action-btn:hover {
              background-color: #1976D2;
         }
@@ -531,7 +537,6 @@
         </header>
 
         <!-- Sections will be ordered by JS based on settings -->
-        <!-- Calculator 1: What is X% of Y? -->
         <section id="calc-section-1" class="calculator-section" data-title-key="calc1Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc1Desc">Find Percentage of Number</h4>
@@ -550,7 +555,6 @@
             </div>
         </section>
 
-        <!-- Calculator 2: X is what percent of Y? -->
         <section id="calc-section-2" class="calculator-section" data-title-key="calc2Desc">
             <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc2Desc">Find Part's Percentage of Whole</h4>
@@ -571,7 +575,6 @@
             </div>
         </section>
 
-        <!-- Calculator 3: Percentage Increase/Decrease from X to Y -->
         <section id="calc-section-3" class="calculator-section" data-title-key="calc3Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc3Desc">Calculate Percentage Change</h4>
@@ -594,7 +597,6 @@
             </div>
         </section>
 
-        <!-- Calculator 4: Increase/Decrease X by Y% -->
         <section id="calc-section-4" class="calculator-section" data-title-key="calc4Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc4Desc">Value After % Increase/Decrease</h4>
@@ -617,7 +619,6 @@
             </div>
         </section>
 
-        <!-- Calculator 5: Reverse Percentage (Find Original) -->
         <section id="calc-section-5" class="calculator-section" data-title-key="calc5Desc">
              <button class="clear-section-btn" aria-label="Clear this section">×</button>
              <h4 class="section-description" data-translate-key="calc5Desc">Find Original Value (Reverse %)</h4>
@@ -644,27 +645,38 @@
 
     </div> <!-- End .container -->
 
-    <!-- Settings Modal -->
+    <!-- Settings Modal (Main) -->
     <div id="settings-modal" class="modal">
         <div class="modal-content">
             <button id="close-settings-btn" class="modal-close-btn" aria-label="Close settings">×</button>
             <h2 data-translate-key="settingsTitle">Settings</h2>
-            <div class="setting-group">
-                <label data-translate-key="langLabel">Language:</label>
-                <div class="radio-group">
-                    <input type="radio" id="lang-en" name="language" value="en">
-                    <label for="lang-en">English</label>
-                </div>
-                <div class="radio-group">
-                    <input type="radio" id="lang-bg" name="language" value="bg">
-                    <label for="lang-bg">Български</label>
-                </div>
-            </div>
+            <!-- Language option moved to a button -->
+            <button id="language-settings-btn" class="modal-action-btn" data-translate-key="languageMenuBtn">Language</button>
             <hr class="modal-divider">
             <button id="edit-layout-btn" class="modal-action-btn" data-translate-key="editLayoutBtn">Edit Layout</button>
         </div>
     </div>
     <!-- End Settings Modal -->
+
+    <!-- Language Modal -->
+    <div id="language-modal" class="modal">
+        <div class="modal-content">
+            <button id="close-language-modal-btn" class="modal-close-btn" aria-label="Close language settings">×</button>
+            <h2 data-translate-key="langSettingsTitle">Language Settings</h2>
+             <div class="setting-group">
+                <label data-translate-key="langLabel">Select Language:</label>
+                <div class="radio-group">
+                    <input type="radio" id="modal-lang-en" name="modal-language" value="en">
+                    <label for="modal-lang-en">English</label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="modal-lang-bg" name="modal-language" value="bg">
+                    <label for="modal-lang-bg">Български</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Language Modal -->
 
     <!-- Layout Editor Modal -->
     <div id="layout-editor-modal" class="modal">
@@ -687,203 +699,53 @@
         const translations = {
             en: {
                 headerTitle: "Calculator",
-                calc1Desc: "Find Percentage of Number",
-                calc1Label1: "What is",
-                calc1Label2: "% of",
-                calc2Desc: "Find Part's Percentage of Whole",
-                calc2Label1: "is what % of",
-                calc3Desc: "Calculate Percentage Change",
-                calc3Label1: "% change",
-                calc3Label2: "from",
-                calc3Label3: "to",
-                calc4Desc: "Value After % Increase/Decrease",
-                increaseOpt: "Increase",
-                decreaseOpt: "Decrease",
-                calc4Label1: "by",
-                calc5Desc: "Find Original Value (Reverse %)",
-                calc5Label1: "is",
-                moreThanOpt: "more than",
-                lessThanOpt: "less than",
-                calc5Label2: "what?",
-                calcButton: "CALCULATE",
-                settingsTitle: "Settings",
-                langLabel: "Language:",
-                copyResultLabel: "Copy result",
-                editLayoutBtn: "Edit Layout",
-                layoutEditorTitle: "Edit Layout",
-                layoutInstructions: "Drag to reorder. Toggle visibility.",
-                saveLayoutBtn: "Save & Close"
+                calc1Desc: "Find Percentage of Number", calc1Label1: "What is", calc1Label2: "% of",
+                calc2Desc: "Find Part's Percentage of Whole", calc2Label1: "is what % of",
+                calc3Desc: "Calculate Percentage Change", calc3Label1: "% change", calc3Label2: "from", calc3Label3: "to",
+                calc4Desc: "Value After % Increase/Decrease", increaseOpt: "Increase", decreaseOpt: "Decrease", calc4Label1: "by",
+                calc5Desc: "Find Original Value (Reverse %)", calc5Label1: "is", moreThanOpt: "more than", lessThanOpt: "less than", calc5Label2: "what?",
+                calcButton: "CALCULATE", settingsTitle: "Settings", langLabel: "Select Language:", copyResultLabel: "Copy result",
+                editLayoutBtn: "Edit Layout", layoutEditorTitle: "Edit Layout", layoutInstructions: "Drag to reorder. Toggle visibility.", saveLayoutBtn: "Save & Close",
+                languageMenuBtn: "Language", langSettingsTitle: "Language Settings"
             },
             bg: {
                 headerTitle: "Калкулатор",
-                calc1Desc: "Намиране на процент от число",
-                calc1Label1: "Колко е",
-                calc1Label2: "% от",
-                calc2Desc: "Какъв процент е част от цяло",
-                calc2Label1: "е какъв % от",
-                calc3Desc: "Изчисляване на процентна промяна",
-                calc3Label1: "% промяна",
-                calc3Label2: "от",
-                calc3Label3: "до",
-                calc4Desc: "Стойност след % увеличение/намаление",
-                increaseOpt: "Увеличение",
-                decreaseOpt: "Намаление",
-                calc4Label1: "с",
-                calc5Desc: "Намиране на оригинална стойност (Обратно %)",
-                calc5Label1: "е",
-                moreThanOpt: "повече от",
-                lessThanOpt: "по-малко от",
-                calc5Label2: "колко?",
-                calcButton: "ИЗЧИСЛИ",
-                settingsTitle: "Настройки",
-                langLabel: "Език:",
-                copyResultLabel: "Копирай резултата",
-                editLayoutBtn: "Редактиране на подредба",
-                layoutEditorTitle: "Редактиране на подредба",
-                layoutInstructions: "Плъзнете за пренареждане. Превключете видимост.",
-                saveLayoutBtn: "Запази и Затвори"
+                calc1Desc: "Намиране на процент от число", calc1Label1: "Колко е", calc1Label2: "% от",
+                calc2Desc: "Какъв процент е част от цяло", calc2Label1: "е какъв % от",
+                calc3Desc: "Изчисляване на процентна промяна", calc3Label1: "% промяна", calc3Label2: "от", calc3Label3: "до",
+                calc4Desc: "Стойност след % увеличение/намаление", increaseOpt: "Увеличение", decreaseOpt: "Намаление", calc4Label1: "с",
+                calc5Desc: "Намиране на оригинална стойност (Обратно %)", calc5Label1: "е", moreThanOpt: "повече от", lessThanOpt: "по-малко от", calc5Label2: "колко?",
+                calcButton: "ИЗЧИСЛИ", settingsTitle: "Настройки", langLabel: "Изберете език:", copyResultLabel: "Копирай резултата",
+                editLayoutBtn: "Редактиране на подредба", layoutEditorTitle: "Редактиране на подредба", layoutInstructions: "Плъзнете за пренареждане. Превключете видимост.", saveLayoutBtn: "Запази и Затвори",
+                languageMenuBtn: "Език", langSettingsTitle: "Езикови Настройки"
             }
         };
-
         let currentLanguage = 'en'; // Default
 
         // --- Translation Function ---
-        function setLanguage(lang) {
-            if (!translations[lang]) { console.warn(`Language ${lang} not found.`); return; }
-            currentLanguage = lang;
-            localStorage.setItem('language', lang);
-            document.documentElement.lang = lang;
+        function setLanguage(lang) { if (!translations[lang]) { console.warn(`Lang ${lang} not found.`); return; } currentLanguage = lang; localStorage.setItem('language', lang); document.documentElement.lang = lang; document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.getAttribute('data-translate-key'); if (translations[lang][key]) { if (el.tagName === 'INPUT' && el.type === 'button') { el.value = translations[lang][key]; } else if (el.tagName === 'BUTTON' || el.tagName === 'OPTION' || el.tagName === 'SPAN' || el.tagName === 'H1' || el.tagName === 'H4' || el.tagName === 'LABEL' || el.tagName === 'H2' || el.tagName === 'P') { el.textContent = translations[lang][key]; } } else { console.warn(`Key "${key}" not found for lang "${lang}".`); } }); document.querySelectorAll('.copy-btn').forEach(btn => { const baseId = btn.id.replace('copy-', ''); const resultNumber = baseId.match(/\d+/); const newLabel = translations[lang]['copyResultLabel'] + (resultNumber ? " " + resultNumber[0] : ""); btn.setAttribute('aria-label', newLabel); }); const modalRadioToCheck = document.getElementById(`modal-lang-${lang}`); if (modalRadioToCheck) { modalRadioToCheck.checked = true; } if(layoutEditorModal.style.display === 'block') { populateLayoutEditor(currentLayoutSettings); } }
 
-            document.querySelectorAll('[data-translate-key]').forEach(element => {
-                const key = element.getAttribute('data-translate-key');
-                if (translations[lang][key]) {
-                     if (element.tagName === 'INPUT' && element.type === 'button') { element.value = translations[lang][key]; }
-                     else if (element.tagName === 'BUTTON' || element.tagName === 'OPTION' || element.tagName === 'SPAN' || element.tagName === 'H1' || element.tagName === 'H4' || element.tagName === 'LABEL' || element.tagName === 'H2' || element.tagName === 'P') { element.textContent = translations[lang][key]; }
-                } else { console.warn(`Translation key "${key}" not found for lang "${lang}".`); }
-            });
-             document.querySelectorAll('.copy-btn').forEach(btn => {
-                 const baseId = btn.id.replace('copy-', '');
-                 const resultNumber = baseId.match(/\d+/);
-                 const newLabel = translations[lang]['copyResultLabel'] + (resultNumber ? " " + resultNumber[0] : "");
-                 btn.setAttribute('aria-label', newLabel);
-             });
-            const radioToCheck = document.getElementById(`lang-${lang}`);
-            if (radioToCheck) { radioToCheck.checked = true; }
-             // Re-populate layout editor if it's open to update titles
-             if(layoutEditorModal.style.display === 'block') {
-                 populateLayoutEditor(currentLayoutSettings);
-             }
-        }
+        // --- Layout Configuration & Persistence ---
+        const DEFAULT_LAYOUT = [ { id: 'calc-section-1', visible: true }, { id: 'calc-section-2', visible: true }, { id: 'calc-section-3', visible: true }, { id: 'calc-section-4', visible: true }, { id: 'calc-section-5', visible: true } ];
+        let currentLayoutSettings = [];
+        function saveLayoutSettings(settings) { try { localStorage.setItem('layoutSettings', JSON.stringify(settings)); } catch (e) { console.error("Save layout failed:", e); } }
+        function loadLayoutSettings() { const savedSettings = localStorage.getItem('layoutSettings'); try { const parsed = savedSettings ? JSON.parse(savedSettings) : DEFAULT_LAYOUT.map(item => ({...item})); const currentIds = parsed.map(item => item.id); const missing = DEFAULT_LAYOUT.filter(item => !currentIds.includes(item.id)).map(item => ({...item})); currentLayoutSettings = [...parsed, ...missing]; const allDefaultIds = DEFAULT_LAYOUT.map(item => item.id); currentLayoutSettings = currentLayoutSettings.filter(item => allDefaultIds.includes(item.id)); currentLayoutSettings.sort((a, b) => { const indexA = DEFAULT_LAYOUT.findIndex(item => item.id === a.id); const indexB = DEFAULT_LAYOUT.findIndex(item => item.id === b.id); return indexA - indexB; }); return currentLayoutSettings; } catch (e) { console.error("Load/parse layout failed, using default:", e); currentLayoutSettings = DEFAULT_LAYOUT.map(item => ({...item})); return currentLayoutSettings; } }
+        function applyLayout(settings) { const container = document.getElementById('calculator-container'); if (!container) return; settings.forEach(item => { const section = document.getElementById(item.id); if (section) { if (item.visible) { section.classList.remove('hidden-section'); } else { section.classList.add('hidden-section'); } } }); settings.forEach(item => { if (item.visible) { const section = document.getElementById(item.id); if (section) { container.appendChild(section); } } }); }
 
-        // --- Layout Configuration ---
-        const DEFAULT_LAYOUT = [
-            { id: 'calc-section-1', visible: true },
-            { id: 'calc-section-2', visible: true },
-            { id: 'calc-section-3', visible: true },
-            { id: 'calc-section-4', visible: true },
-            { id: 'calc-section-5', visible: true }
-        ];
-        let currentLayoutSettings = []; // Will be loaded
-
-        // --- Persistence Functions ---
-        function saveLayoutSettings(settings) { try { localStorage.setItem('layoutSettings', JSON.stringify(settings)); } catch (e) { console.error("Failed to save layout settings:", e); } }
-        function loadLayoutSettings() {
-            const savedSettings = localStorage.getItem('layoutSettings');
-            try {
-                const parsed = savedSettings ? JSON.parse(savedSettings) : DEFAULT_LAYOUT.map(item => ({...item})); // Use deep copy of default
-                 const currentIds = parsed.map(item => item.id);
-                 const missing = DEFAULT_LAYOUT.filter(item => !currentIds.includes(item.id)).map(item => ({...item})); // Deep copy missing
-                 currentLayoutSettings = [...parsed, ...missing];
-                 const allDefaultIds = DEFAULT_LAYOUT.map(item => item.id);
-                 currentLayoutSettings = currentLayoutSettings.filter(item => allDefaultIds.includes(item.id));
-                 currentLayoutSettings.sort((a, b) => { const indexA = DEFAULT_LAYOUT.findIndex(item => item.id === a.id); const indexB = DEFAULT_LAYOUT.findIndex(item => item.id === b.id); return indexA - indexB; });
-                 return currentLayoutSettings;
-            } catch (e) { console.error("Failed to load or parse layout settings, using default:", e); currentLayoutSettings = DEFAULT_LAYOUT.map(item => ({...item})); return currentLayoutSettings; }
-        }
-
-        // --- Function to Apply Layout to Main Page ---
-        function applyLayout(settings) {
-            const container = document.getElementById('calculator-container');
-            if (!container) return;
-            settings.forEach(item => { const section = document.getElementById(item.id); if (section) { if (item.visible) { section.classList.remove('hidden-section'); } else { section.classList.add('hidden-section'); } } });
-            settings.forEach(item => { if (item.visible) { const section = document.getElementById(item.id); if (section) { container.appendChild(section); } } });
-        }
-
-        // --- Layout Editor Variables ---
-        const layoutEditorModal = document.getElementById('layout-editor-modal');
-        const layoutEditorList = document.getElementById('layout-editor-list');
-        const editLayoutBtn = document.getElementById('edit-layout-btn');
-        const closeLayoutEditorBtn = document.getElementById('close-layout-editor-btn');
-        const saveLayoutBtn = document.getElementById('save-layout-btn');
-        let draggedItem = null;
-
-        // --- Populate Layout Editor ---
-        function populateLayoutEditor(settings) {
-            if (!layoutEditorList) return;
-            layoutEditorList.innerHTML = '';
-            settings.forEach((item, index) => {
-                const sectionElement = document.getElementById(item.id);
-                const titleKey = sectionElement?.getAttribute('data-title-key') || item.id;
-                const titleText = translations[currentLanguage]?.[titleKey] || item.id;
-                const listItem = document.createElement('li');
-                listItem.setAttribute('draggable', true);
-                listItem.dataset.id = item.id; listItem.dataset.index = index;
-                const handle = document.createElement('span'); handle.className = 'drag-handle'; handle.innerHTML = '<i class="fa-solid fa-grip-vertical"></i>';
-                const title = document.createElement('span'); title.className = 'layout-title'; title.textContent = titleText; title.dataset.translateKey = titleKey;
-                const toggleLabel = document.createElement('label'); toggleLabel.className = 'toggle-switch';
-                const toggleInput = document.createElement('input'); toggleInput.type = 'checkbox'; toggleInput.checked = item.visible; toggleInput.dataset.id = item.id; toggleInput.addEventListener('change', handleVisibilityToggle);
-                const slider = document.createElement('span'); slider.className = 'slider';
-                toggleLabel.appendChild(toggleInput); toggleLabel.appendChild(slider);
-                listItem.appendChild(handle); listItem.appendChild(title); listItem.appendChild(toggleLabel);
-                listItem.addEventListener('dragstart', dragStart); listItem.addEventListener('dragover', dragOver); listItem.addEventListener('drop', drop); listItem.addEventListener('dragend', dragEnd);
-                layoutEditorList.appendChild(listItem);
-            });
-        }
-
-        // --- Drag and Drop Handlers ---
+        // --- Layout Editor Variables & Functions ---
+        const layoutEditorModal = document.getElementById('layout-editor-modal'); const layoutEditorList = document.getElementById('layout-editor-list'); const editLayoutBtn = document.getElementById('edit-layout-btn'); const closeLayoutEditorBtn = document.getElementById('close-layout-editor-btn'); const saveLayoutBtn = document.getElementById('save-layout-btn'); let draggedItem = null;
+        function populateLayoutEditor(settings) { if (!layoutEditorList) return; layoutEditorList.innerHTML = ''; settings.forEach((item, index) => { const sectionElement = document.getElementById(item.id); const titleKey = sectionElement?.getAttribute('data-title-key') || item.id; const titleText = translations[currentLanguage]?.[titleKey] || item.id; const listItem = document.createElement('li'); listItem.setAttribute('draggable', true); listItem.dataset.id = item.id; listItem.dataset.index = index; const handle = document.createElement('span'); handle.className = 'drag-handle'; handle.innerHTML = '<i class="fa-solid fa-grip-vertical"></i>'; const title = document.createElement('span'); title.className = 'layout-title'; title.textContent = titleText; title.dataset.translateKey = titleKey; const toggleLabel = document.createElement('label'); toggleLabel.className = 'toggle-switch'; const toggleInput = document.createElement('input'); toggleInput.type = 'checkbox'; toggleInput.checked = item.visible; toggleInput.dataset.id = item.id; toggleInput.addEventListener('change', handleVisibilityToggle); const slider = document.createElement('span'); slider.className = 'slider'; toggleLabel.appendChild(toggleInput); toggleLabel.appendChild(slider); listItem.appendChild(handle); listItem.appendChild(title); listItem.appendChild(toggleLabel); listItem.addEventListener('dragstart', dragStart); listItem.addEventListener('dragover', dragOver); listItem.addEventListener('drop', drop); listItem.addEventListener('dragend', dragEnd); layoutEditorList.appendChild(listItem); }); }
         function dragStart(e) { draggedItem = this; setTimeout(() => this.classList.add('dragging'), 0); e.dataTransfer.effectAllowed = 'move'; }
         function dragEnd() { setTimeout(() => { if (draggedItem) draggedItem.classList.remove('dragging'); draggedItem = null; }, 0); }
-        function dragOver(e) {
-             e.preventDefault(); e.dataTransfer.dropEffect = 'move';
-             const targetItem = e.target.closest('li');
-             if (targetItem && targetItem !== draggedItem) {
-                 const list = targetItem.parentNode;
-                 const rect = targetItem.getBoundingClientRect(); const offsetY = e.clientY - rect.top;
-                 if (offsetY > rect.height / 2) { list.insertBefore(draggedItem, targetItem.nextSibling); }
-                 else { list.insertBefore(draggedItem, targetItem); }
-                 updateListItemIndices(list);
-             }
-        }
+        function dragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; const targetItem = e.target.closest('li'); if (targetItem && targetItem !== draggedItem) { const list = targetItem.parentNode; const rect = targetItem.getBoundingClientRect(); const offsetY = e.clientY - rect.top; if (offsetY > rect.height / 2) { list.insertBefore(draggedItem, targetItem.nextSibling); } else { list.insertBefore(draggedItem, targetItem); } updateListItemIndices(list); } }
         function drop(e) { e.preventDefault(); }
         function updateListItemIndices(list) { list.querySelectorAll('li').forEach((item, index) => { item.dataset.index = index; }); }
+        function handleVisibilityToggle(event) { /* State read on save */ }
 
-        // --- Visibility Toggle Handler ---
-        function handleVisibilityToggle(event) {
-             // Intentionally left blank - visibility state is read on save
-             // We don't update currentLayoutSettings immediately here
-        }
-
-        // --- Modal Control Logic ---
-        editLayoutBtn.addEventListener('click', () => {
-            settingsModal.style.display = 'none';
-            // Load FRESH settings from storage when opening editor
-            const settingsToEdit = loadLayoutSettings();
-            populateLayoutEditor(settingsToEdit);
-            layoutEditorModal.style.display = 'block';
-        });
+        // --- Modal Control Logic (Layout Editor) ---
+        editLayoutBtn.addEventListener('click', () => { settingsModal.style.display = 'none'; const settingsToEdit = loadLayoutSettings(); populateLayoutEditor(settingsToEdit); layoutEditorModal.style.display = 'block'; });
         closeLayoutEditorBtn.addEventListener('click', () => { layoutEditorModal.style.display = 'none'; });
-        saveLayoutBtn.addEventListener('click', () => {
-             const updatedSettings = [];
-             layoutEditorList.querySelectorAll('li').forEach(item => { const id = item.dataset.id; const checkbox = item.querySelector('input[type="checkbox"]'); updatedSettings.push({ id: id, visible: checkbox.checked }); });
-             currentLayoutSettings = updatedSettings;
-             saveLayoutSettings(currentLayoutSettings);
-             applyLayout(currentLayoutSettings);
-             layoutEditorModal.style.display = 'none';
-             // Re-check clear button visibility based on new layout
-             document.querySelectorAll('.calculator-section').forEach(section => { if (!section.classList.contains('hidden-section')) updateClearButtonVisibility(section); });
-
-        });
-
+        saveLayoutBtn.addEventListener('click', () => { const updatedSettings = []; layoutEditorList.querySelectorAll('li').forEach(item => { const id = item.dataset.id; const checkbox = item.querySelector('input[type="checkbox"]'); updatedSettings.push({ id: id, visible: checkbox.checked }); }); currentLayoutSettings = updatedSettings; saveLayoutSettings(currentLayoutSettings); applyLayout(currentLayoutSettings); layoutEditorModal.style.display = 'none'; document.querySelectorAll('.calculator-section:not(.hidden-section)').forEach(section => { updateClearButtonVisibility(section); }); });
 
        // Helper function to get float value or null if invalid/empty
         function getFloatValue(id) { const element = document.getElementById(id); if (!element || element.value.trim() === '') return null; const value = parseFloat(element.value); return isNaN(value) ? null : value; }
@@ -927,33 +789,64 @@
         // --- Section Activation/Deactivation Logic ---
         const allCalculatorSections = document.querySelectorAll('.calculator-section');
         function deactivateAllSections() { allCalculatorSections.forEach(sec => { sec.classList.remove('active-section'); }); }
-        allCalculatorSections.forEach(section => { section.addEventListener('click', (event) => { // Only activate if clicking within the section but NOT on a button inside it
-             if (!event.target.closest('button')) {
-                 if (!section.classList.contains('active-section')) { deactivateAllSections(); section.classList.add('active-section'); }
-             }
-         }); });
-        document.addEventListener('click', (event) => { const clickedInsideSection = event.target.closest('.calculator-section'); const clickedInsideSettings = event.target.closest('#settings-btn') || event.target.closest('#settings-modal') || event.target.closest('#layout-editor-modal'); if (!clickedInsideSection && !clickedInsideSettings) { deactivateAllSections(); } });
+        allCalculatorSections.forEach(section => { section.addEventListener('click', (event) => { if (!event.target.closest('button')) { if (!section.classList.contains('active-section')) { deactivateAllSections(); section.classList.add('active-section'); } } }); });
+        document.addEventListener('click', (event) => { const clickedInsideSection = event.target.closest('.calculator-section'); const clickedInsideSettings = event.target.closest('#settings-btn') || event.target.closest('#settings-modal') || event.target.closest('#layout-editor-modal') || event.target.closest('#language-modal') ; if (!clickedInsideSection && !clickedInsideSettings) { deactivateAllSections(); } });
 
 
         // --- Settings Modal Logic (Main) ---
         const settingsBtn = document.getElementById('settings-btn');
         const settingsModal = document.getElementById('settings-modal');
         const closeSettingsBtn = document.getElementById('close-settings-btn');
-        const langRadios = document.querySelectorAll('input[name="language"]');
+        // --- Language Modal Elements ---
+        const languageSettingsBtn = document.getElementById('language-settings-btn');
+        const languageModal = document.getElementById('language-modal');
+        const closeLanguageModalBtn = document.getElementById('close-language-modal-btn');
+        const modalLangRadios = document.querySelectorAll('input[name="modal-language"]');
 
-        settingsBtn.addEventListener('click', () => { settingsModal.style.display = 'block'; const currentLangRadio = document.getElementById(`lang-${currentLanguage}`); if(currentLangRadio) currentLangRadio.checked = true; });
+
+        settingsBtn.addEventListener('click', () => { settingsModal.style.display = 'block'; });
         closeSettingsBtn.addEventListener('click', () => { settingsModal.style.display = 'none'; });
-        window.addEventListener('click', (event) => { if (event.target == settingsModal) { settingsModal.style.display = 'none'; } }); // Close on outside click
-        langRadios.forEach(radio => { radio.addEventListener('change', (event) => { if (event.target.checked) { setLanguage(event.target.value); } }); });
+        window.addEventListener('click', (event) => { if (event.target == settingsModal) { settingsModal.style.display = 'none'; } });
+
+
+        // --- Language Modal Controls ---
+        languageSettingsBtn.addEventListener('click', () => {
+             settingsModal.style.display = 'none'; // Close main settings
+             const currentLangModalRadio = document.getElementById(`modal-lang-${currentLanguage}`);
+             if(currentLangModalRadio) currentLangModalRadio.checked = true;
+             languageModal.style.display = 'block';
+         });
+         closeLanguageModalBtn.addEventListener('click', () => {
+             languageModal.style.display = 'none';
+         });
+         window.addEventListener('click', (event) => { // Close language modal on outside click
+            if (event.target == languageModal) {
+                languageModal.style.display = 'none';
+            }
+        });
+
+        // Language Change Handler (using radios inside language modal)
+        modalLangRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                if (event.target.checked) {
+                    setLanguage(event.target.value);
+                    // Optionally close language modal after selection?
+                    // languageModal.style.display = 'none';
+                }
+            });
+        });
 
 
         // --- Initial Page Load ---
         document.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('language');
             const initialLang = savedLang && translations[savedLang] ? savedLang : 'en';
-            setLanguage(initialLang);
-            const settings = loadLayoutSettings();
-            applyLayout(settings);
+            setLanguage(initialLang); // Apply language first
+
+            const settings = loadLayoutSettings(); // Load layout settings
+            applyLayout(settings); // Apply layout
+
+            // Initialize clear button visibility only for visible sections
             document.querySelectorAll('.calculator-section:not(.hidden-section)').forEach(section => {
                 updateClearButtonVisibility(section);
             });
@@ -962,7 +855,7 @@
 
     </script>
 
-    <!-- PWA: Script to Register the Service Worker (Using Absolute Path) -->
+    <!-- PWA: Script to Register the Service Worker -->
      <script> if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/Percentage-Calc/service-worker.js') .then(registration => { console.log('SW registered: ', registration.scope); }) .catch(error => { console.error('SW registration failed: ', error); }); }); } </script>
 
 </body>
