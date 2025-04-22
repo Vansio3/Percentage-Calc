@@ -258,6 +258,25 @@
                  <input type="text" id="calc4-result" readonly aria-label="Calculation result 4">
             </div>
         </section>
+
+        <!-- Calculator 5: Reverse Percentage (Find Original) -->
+        <section class="calculator-section">
+             <div class="input-line">
+                <input type="number" id="calc5-final" step="any" aria-label="Final value">
+                <span>is</span>
+                <input type="number" id="calc5-percent" step="any" aria-label="Percentage value">
+                <span>%</span>
+                 <select id="calc5-operation" aria-label="Operation Type">
+                    <option value="more">more than</option>
+                    <option value="less">less than</option>
+                </select>
+                 <span>what?</span>
+            </div>
+            <div class="output-line">
+                 <button id="calc5-btn">CALCULATE</button>
+                 <input type="text" id="calc5-result" readonly aria-label="Calculation result 5 (Original Value)">
+            </div>
+        </section>
         <!-- End Calculator Sections -->
 
     </div>
@@ -290,7 +309,7 @@
             }
         }
 
-         // Function to handle calculation and display (Generic, used by Enter key)
+         // Function to handle calculation and display (Generic, potentially used by Enter key if refactored)
         function performCalculation(calcFunction, outputId, ...inputIds) {
             const inputs = inputIds.map(id => getFloatValue(id));
 
@@ -325,13 +344,11 @@
             return (change / Math.abs(fromValue)) * 100;
         }
 
-        // --- NEW Calculator Logic Function ---
         function calculateValueChange(operation, base, percent) {
-            // Get values directly for this specific calculator - ensure they are numbers
              const numBase = Number(base);
              const numPercent = Number(percent);
              if (isNaN(numBase) || isNaN(numPercent)){
-                 return 'Invalid input'; // Handle potential non-numeric values passed
+                 return 'Invalid input';
              }
 
             const changeAmount = (numPercent / 100) * numBase;
@@ -340,14 +357,52 @@
             } else if (operation === 'decrease') {
                 return numBase - changeAmount;
             } else {
-                return null; // Should not happen with dropdown
+                return null;
             }
+        }
+
+        // --- NEW Calculator Logic Function for Reverse Percentage ---
+        function calculateReversePercentage(finalValue, percent, operation) {
+            const numFinal = Number(finalValue);
+            const numPercent = Number(percent);
+
+            if (isNaN(numFinal) || isNaN(numPercent)) {
+                return 'Invalid input';
+            }
+
+            if (numPercent < 0) {
+                 return 'Percentage cannot be negative';
+            }
+
+            let originalValue;
+            const percentAsDecimal = numPercent / 100;
+
+            if (operation === 'more') {
+                // Original = Final / (1 + percentAsDecimal)
+                 if (1 + percentAsDecimal === 0) {
+                     return 'Calculation error';
+                 }
+                originalValue = numFinal / (1 + percentAsDecimal);
+            } else if (operation === 'less') {
+                // Original = Final / (1 - percentAsDecimal)
+                if (percentAsDecimal >= 1) {
+                     if (numFinal === 0 && percentAsDecimal === 1) return 0;
+                     return 'Cannot be 100% or more less';
+                }
+                 if (1 - percentAsDecimal === 0) {
+                      return 'Calculation error (div by zero)';
+                 }
+                originalValue = numFinal / (1 - percentAsDecimal);
+            } else {
+                return null;
+            }
+
+            return originalValue;
         }
 
 
         // --- Event Listeners ---
         document.getElementById('calc1-btn').addEventListener('click', function() {
-            // Re-using generic performCalculation for simplicity here
              const percent = getFloatValue('calc1-percent');
              const base = getFloatValue('calc1-base');
              displayResult('calc1-result', ''); // Clear first
@@ -371,7 +426,6 @@
              displayResult('calc3-result', calculatePercentChange(fromValue, toValue));
         });
 
-        // --- Add Event Listener for Calc 4 ---
         document.getElementById('calc4-btn').addEventListener('click', function() {
             const operation = document.getElementById('calc4-operation').value;
             const base = getFloatValue('calc4-base');
@@ -380,13 +434,26 @@
             displayResult('calc4-result', ''); // Clear first
 
             if (base === null || percent === null) {
+                return;
+            }
+             const result = calculateValueChange(operation, base, percent);
+             displayResult('calc4-result', result);
+        });
+
+        // --- Add Event Listener for Calc 5 ---
+        document.getElementById('calc5-btn').addEventListener('click', function() {
+            const finalValue = getFloatValue('calc5-final');
+            const percent = getFloatValue('calc5-percent');
+            const operation = document.getElementById('calc5-operation').value;
+
+            displayResult('calc5-result', ''); // Clear first
+
+            if (finalValue === null || percent === null) {
                 return; // Don't calculate if inputs are missing
             }
 
-            // No try/catch needed here as calculateValueChange handles errors internally
-             const result = calculateValueChange(operation, base, percent);
-             displayResult('calc4-result', result);
-
+            const result = calculateReversePercentage(finalValue, percent, operation);
+            displayResult('calc5-result', result);
         });
 
 
@@ -404,11 +471,6 @@
                         }
                     });
                 });
-                // Optionally handle Enter on the select element too? Less common.
-                 // const select = section.querySelector('.input-line select');
-                 // if (select) {
-                 //    select.addEventListener('keypress', function(event) { ... });
-                 // }
             }
         });
     </script>
