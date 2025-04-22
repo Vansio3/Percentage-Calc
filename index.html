@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en"> {/* Default language, will be updated by JS */}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Calculator</title> 
+    <title>Percentage Calculator</title> {/* Generic title */}
 
     <!-- PWA: Link to the Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -384,9 +384,12 @@
          }
 
 
-        /* Larger Screens (Optional tweaks) */
-        @media (min-width: 600px) {
-             /* Optional: Add tweaks here if needed */
+        /* --- UPDATED MEDIA QUERY --- */
+        @media (min-width: 480px) {
+             /* Styles inside here apply at 480px or wider */
+             /* Example: You could slightly adjust widths/gaps if needed */
+             /* .input-line { gap: 4px; } */
+             /* .calculator-section input[type="number"] { width: 75px; } */
         }
 
     </style>
@@ -396,7 +399,7 @@
     <div class="container">
         <header>
             <img src="icons/icon-192.png" alt="Logo" class="logo-img">
-            <h1 data-translate-key="headerTitle">Calculator</h1> 
+            <h1 data-translate-key="headerTitle">Calculator</h1>
              <button id="settings-btn" class="icon-btn" aria-label="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
@@ -541,7 +544,7 @@
         // --- Translation Data ---
         const translations = {
             en: {
-                headerTitle: "Calculator", // <-- UPDATED
+                headerTitle: "Calculator",
                 calc1Desc: "Find Percentage of Number",
                 calc1Label1: "What is",
                 calc1Label2: "% of",
@@ -563,10 +566,10 @@
                 calcButton: "CALCULATE",
                 settingsTitle: "Settings",
                 langLabel: "Language:",
-                copyResultLabel: "Copy result" // Generic label for aria
+                copyResultLabel: "Copy result"
             },
             bg: {
-                headerTitle: "Калкулатор", // <-- UPDATED
+                headerTitle: "Калкулатор",
                 calc1Desc: "Намиране на процент от число",
                 calc1Label1: "Колко е",
                 calc1Label2: "% от",
@@ -601,8 +604,8 @@
                 return;
             }
             currentLanguage = lang;
-            localStorage.setItem('language', lang); // Save preference
-            document.documentElement.lang = lang; // Set page language attribute
+            localStorage.setItem('language', lang);
+            document.documentElement.lang = lang;
 
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
@@ -619,7 +622,7 @@
 
              document.querySelectorAll('.copy-btn').forEach(btn => {
                  const baseId = btn.id.replace('copy-', '');
-                 const resultNumber = baseId.match(/\d+/); // Extract number from ID like 'calc1-result'
+                 const resultNumber = baseId.match(/\d+/);
                  const newLabel = translations[lang]['copyResultLabel'] + (resultNumber ? " " + resultNumber[0] : "");
                  btn.setAttribute('aria-label', newLabel);
              });
@@ -629,7 +632,6 @@
                 radioToCheck.checked = true;
             }
         }
-
 
        // Helper function to get float value or null if invalid/empty
         function getFloatValue(id) {
