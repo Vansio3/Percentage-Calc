@@ -11,6 +11,9 @@
     <!-- PWA: Set theme color for browser UI -->
     <meta name="theme-color" content="#2D2D2D">
 
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         /* Basic Reset & General Styles */
         * {
@@ -29,6 +32,11 @@
             color: #EAEAEA;
             line-height: 1.5;
             padding: 10px;
+            /* --- NEW: Disable Text Selection --- */
+            user-select: none; /* Standard */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE/Edge Legacy */
         }
 
         .container {
@@ -163,7 +171,6 @@
              color: #EAEAEA;
              border: 1px solid #555;
         }
-        /* --- NEW: Remove focus styling from Readonly inputs --- */
         .calculator-section input[readonly]:focus {
             outline: none;
             box-shadow: none;
@@ -184,10 +191,9 @@
             flex-shrink: 0;
             width: auto;
         }
-         /* Optional: Add focus style for select if desired */
          .calculator-section select:focus {
             outline: none;
-            border-color: #FF9800; /* Example: Orange border on focus */
+            border-color: #FF9800;
             box-shadow: none;
          }
 
@@ -205,11 +211,11 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            flex-grow: 1;
+            flex-grow: 1; /* Group takes available space */
              min-width: 70px;
         }
         .result-group input[readonly] {
-             flex-grow: 1;
+             flex-grow: 1; /* Input takes space within group */
              width: auto;
              min-width: 50px;
         }
@@ -220,7 +226,7 @@
         }
 
         /* Calculate Buttons */
-        .calculator-section button:not(.clear-section-btn) {
+        .calculator-section button:not(.clear-section-btn):not(.copy-btn) { /* Target CALC buttons specifically */
             padding: 9px 14px;
             background-color: #2196f3;
             color: #FFFFFF;
@@ -233,13 +239,40 @@
             flex-shrink: 0;
             white-space: nowrap;
         }
-        .calculator-section button:not(.clear-section-btn):hover {
+        .calculator-section button:not(.clear-section-btn):not(.copy-btn):hover {
             background-color: #1976D2;
         }
-        /* --- NEW: Remove focus styling from Calculate buttons --- */
-        .calculator-section button:not(.clear-section-btn):focus {
+        .calculator-section button:not(.clear-section-btn):not(.copy-btn):focus {
             outline: none;
             box-shadow: none;
+        }
+
+        /* Copy Button Styling */
+        .copy-btn {
+            background: none;
+            border: none;
+            padding: 0 5px; /* Minimal padding */
+            margin-left: 4px; /* Small space after result field/group */
+            cursor: pointer;
+            color: #AAAAAA; /* Match clear button color */
+            font-size: 1em; /* Adjust icon size if needed */
+            line-height: 1;
+            outline: none;
+            box-shadow: none;
+            flex-shrink: 0; /* Prevent shrinking */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .copy-btn i { /* Style the icon itself */
+            display: block; /* Helps with alignment */
+        }
+        .copy-btn:focus,
+        .copy-btn:active,
+        .copy-btn:hover {
+            outline: none !important;
+            box-shadow: none !important;
+            background: none !important;
+            color: #CCCCCC !important; /* Optional: Slightly lighten on hover */
+            border: none !important;
         }
 
 
@@ -271,6 +304,9 @@
             <div class="output-line">
                 <button id="calc1-btn">CALCULATE</button>
                 <input type="text" id="calc1-result" readonly aria-label="Calculation result 1">
+                <button class="copy-btn" id="copy-calc1-result" aria-label="Copy result 1" style="display: none;">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
             </div>
         </section>
 
@@ -289,6 +325,9 @@
                      <input type="text" id="calc2-result" readonly aria-label="Calculation result 2">
                      <span id="calc2-percent-symbol">%</span>
                 </div>
+                 <button class="copy-btn" id="copy-calc2-result" aria-label="Copy result 2" style="display: none;">
+                    <i class="fa-regular fa-copy"></i>
+                 </button>
             </div>
         </section>
 
@@ -309,6 +348,9 @@
                     <input type="text" id="calc3-result" readonly aria-label="Calculation result 3">
                     <span id="calc3-percent-symbol">%</span>
                 </div>
+                  <button class="copy-btn" id="copy-calc3-result" aria-label="Copy result 3" style="display: none;">
+                    <i class="fa-regular fa-copy"></i>
+                 </button>
             </div>
         </section>
 
@@ -329,6 +371,9 @@
             <div class="output-line">
                  <button id="calc4-btn">CALCULATE</button>
                  <input type="text" id="calc4-result" readonly aria-label="Calculation result 4">
+                  <button class="copy-btn" id="copy-calc4-result" aria-label="Copy result 4" style="display: none;">
+                    <i class="fa-regular fa-copy"></i>
+                 </button>
             </div>
         </section>
 
@@ -350,6 +395,9 @@
             <div class="output-line">
                  <button id="calc5-btn">CALCULATE</button>
                  <input type="text" id="calc5-result" readonly aria-label="Calculation result 5 (Original Value)">
+                 <button class="copy-btn" id="copy-calc5-result" aria-label="Copy result 5" style="display: none;">
+                    <i class="fa-regular fa-copy"></i>
+                 </button>
             </div>
         </section>
         <!-- End Calculator Sections -->
@@ -371,20 +419,35 @@
         // Helper function to display result or error
         function displayResult(id, value) {
             const element = document.getElementById(id);
+            // Derive copy button ID from result ID
+            const copyBtnId = 'copy-' + id;
+            const copyBtn = document.getElementById(copyBtnId);
+
+            let showCopyBtn = false; // Flag to control copy button visibility
+
             if (element) {
                 if (value === null || typeof value === 'undefined' || value === '') {
                     element.value = '';
-                } else if (typeof value === 'string') {
-                     element.value = value; // Display error strings directly
-                } else if (typeof value === 'number') {
-                     element.value = parseFloat(value.toFixed(4)).toString(); // Limit decimals
+                } else if (typeof value === 'string' && isNaN(parseFloat(value)) && value !== '0' ) {
+                    // It's likely an error message (not a number or '0')
+                    element.value = value;
+                } else if (typeof value === 'number' || (typeof value === 'string' && !isNaN(parseFloat(value))) ) {
+                    // It's a valid number (or a string representing one)
+                    element.value = parseFloat(Number(value).toFixed(4)).toString();
+                    showCopyBtn = true; // Show copy button for valid numeric results
                 } else {
-                     element.value = '';
+                     element.value = ''; // Fallback
                 }
+            }
+
+            // Show/Hide Copy Button
+            if (copyBtn) {
+                copyBtn.style.display = showCopyBtn ? 'inline-block' : 'none';
             }
         }
 
-         // Function to handle calculation and display (Generic, potentially used by Enter key if refactored)
+
+         // Function to handle calculation and display (Generic - Not directly used by buttons anymore)
         function performCalculation(calcFunction, outputId, ...inputIds) {
             const inputs = inputIds.map(id => getFloatValue(id));
 
@@ -473,7 +536,7 @@
         }
 
 
-        // --- Event Listeners ---
+        // --- Event Listeners for Calculate Buttons ---
         document.getElementById('calc1-btn').addEventListener('click', function() {
              const percent = getFloatValue('calc1-percent');
              const base = getFloatValue('calc1-base');
@@ -532,7 +595,7 @@
         const sections = document.querySelectorAll('.calculator-section');
         sections.forEach(section => {
             const inputs = section.querySelectorAll('.input-line input[type="number"]');
-            const button = section.querySelector('.output-line button:not(.clear-section-btn)');
+            const button = section.querySelector('.output-line button:not(.clear-section-btn):not(.copy-btn)'); // Target Calculate button
             if(inputs.length > 0 && button){
                 inputs.forEach(input => {
                      input.addEventListener('keypress', function(event) {
@@ -556,10 +619,44 @@
                     section.querySelectorAll('select').forEach(select => {
                         select.selectedIndex = 0;
                     });
+                    // Hide copy buttons in this section too
+                    section.querySelectorAll('.copy-btn').forEach(copyBtn => {
+                        copyBtn.style.display = 'none';
+                    });
                 }
             });
         });
         // --- End Clear Button Functionality ---
+
+
+        // --- Add Copy Button Functionality ---
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const btn = event.target.closest('.copy-btn');
+                const outputLine = btn.closest('.output-line');
+                if (!outputLine) return;
+
+                const resultInput = outputLine.querySelector('input[readonly]');
+
+                if (resultInput && resultInput.value) {
+                    try {
+                        await navigator.clipboard.writeText(resultInput.value);
+                        const icon = btn.querySelector('i');
+                        if (icon) {
+                            const originalIconClass = icon.className;
+                            icon.className = 'fa-solid fa-check'; // Change to checkmark
+                            setTimeout(() => {
+                                icon.className = originalIconClass; // Change back
+                            }, 1500);
+                        }
+                        console.log('Result copied to clipboard!');
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                    }
+                }
+            });
+        });
+        // --- End Copy Button Functionality ---
 
     </script>
 
