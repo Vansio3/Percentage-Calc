@@ -6,9 +6,9 @@
     <title>Percentage Calculator (Dark, Blue)</title>
 
     <!-- PWA: Link to the Web App Manifest -->
-    <link rel="manifest" href="manifest.json"> <!-- Kept relative as per your last change -->
+    <link rel="manifest" href="manifest.json">
 
-    <!-- PWA: Set theme color for browser UI (Can update this too if desired) -->
+    <!-- PWA: Set theme color for browser UI -->
     <meta name="theme-color" content="#2D2D2D">
 
     <style>
@@ -52,7 +52,6 @@
             width: 36px;    /* Adjust size as needed */
             height: 36px;   /* Adjust size as needed */
             flex-shrink: 0; /* Prevent shrinking */
-            /* Removed background, color, font, padding etc from old .logo */
         }
 
         h1 {
@@ -92,7 +91,6 @@
             width: 85px;
             flex-shrink: 0;
             padding: 8px 10px;
-            /* --- NEW COLOR --- */
             border: 1px solid #2196f3; /* Blue border */
             background-color: #2D2D2D;
             color: #EAEAEA;
@@ -119,6 +117,19 @@
              font-size: 0.95em;
              color: #EAEAEA;
              border: 1px solid #555;
+        }
+
+        /* Select Dropdown Styling */
+        .calculator-section select {
+            padding: 8px 10px; /* Match input padding */
+            border: 1px solid #2196f3; /* Match input border color */
+            background-color: #2D2D2D; /* Match input background */
+            color: #EAEAEA; /* Match input text color */
+            border-radius: 4px; /* Match input border-radius */
+            font-size: 0.95em; /* Match input font-size */
+            flex-shrink: 0; /* Prevent shrinking */
+            min-width: 100px; /* Give it some base width */
+             /* Note: Full cross-browser appearance reset might need more specific rules or background images */
         }
 
         /* Labels and Text */
@@ -151,7 +162,6 @@
         /* Buttons */
         .calculator-section button {
             padding: 9px 14px;
-            /* --- NEW COLOR --- */
             background-color: #2196f3; /* Blue background */
             color: #FFFFFF;
             border: none;
@@ -164,7 +174,6 @@
             white-space: nowrap;
         }
         .calculator-section button:hover {
-             /* --- NEW COLOR --- */
             background-color: #1976D2; /* Darker blue on hover */
         }
 
@@ -180,12 +189,11 @@
 
     <div class="container">
         <header>
-            <!-- --- UPDATED LOGO --- -->
             <img src="icons/icon-192.png" alt="Logo" class="logo-img">
             <h1>Percentage Calculator</h1>
         </header>
 
-        <!-- Calculator Sections (No change needed here) -->
+        <!-- Calculator 1: What is X% of Y? -->
         <section class="calculator-section">
             <div class="input-line">
                 <span>What is</span>
@@ -199,6 +207,7 @@
             </div>
         </section>
 
+        <!-- Calculator 2: X is what percent of Y? -->
         <section class="calculator-section">
              <div class="input-line">
                 <input type="number" id="calc2-part" step="any" aria-label="Part value">
@@ -214,6 +223,7 @@
             </div>
         </section>
 
+        <!-- Calculator 3: Percentage Increase/Decrease from X to Y -->
         <section class="calculator-section">
              <div class="input-line">
                 <span>% change</span>
@@ -230,11 +240,29 @@
                 </div>
             </div>
         </section>
+
+        <!-- Calculator 4: Increase/Decrease X by Y% -->
+        <section class="calculator-section">
+             <div class="input-line">
+                <select id="calc4-operation" aria-label="Operation Type">
+                    <option value="increase">Increase</option>
+                    <option value="decrease">Decrease</option>
+                </select>
+                <input type="number" id="calc4-base" step="any" aria-label="Base value">
+                <span>by</span>
+                <input type="number" id="calc4-percent" step="any" aria-label="Percentage value">
+                 <span>%</span>
+            </div>
+            <div class="output-line">
+                 <button id="calc4-btn">CALCULATE</button>
+                 <input type="text" id="calc4-result" readonly aria-label="Calculation result 4">
+            </div>
+        </section>
         <!-- End Calculator Sections -->
 
     </div>
 
-    <!-- Calculator Logic Script (No change needed here) -->
+    <!-- Calculator Logic Script -->
     <script>
        // Helper function to get float value or null if invalid/empty
         function getFloatValue(id) {
@@ -255,14 +283,14 @@
                 } else if (typeof value === 'string') {
                      element.value = value; // Display error strings directly
                 } else if (typeof value === 'number') {
-                     element.value = parseFloat(value.toFixed(4)).toString();
+                     element.value = parseFloat(value.toFixed(4)).toString(); // Limit decimals
                 } else {
                      element.value = '';
                 }
             }
         }
 
-         // Function to handle calculation and display
+         // Function to handle calculation and display (Generic, used by Enter key)
         function performCalculation(calcFunction, outputId, ...inputIds) {
             const inputs = inputIds.map(id => getFloatValue(id));
 
@@ -297,31 +325,90 @@
             return (change / Math.abs(fromValue)) * 100;
         }
 
+        // --- NEW Calculator Logic Function ---
+        function calculateValueChange(operation, base, percent) {
+            // Get values directly for this specific calculator - ensure they are numbers
+             const numBase = Number(base);
+             const numPercent = Number(percent);
+             if (isNaN(numBase) || isNaN(numPercent)){
+                 return 'Invalid input'; // Handle potential non-numeric values passed
+             }
+
+            const changeAmount = (numPercent / 100) * numBase;
+            if (operation === 'increase') {
+                return numBase + changeAmount;
+            } else if (operation === 'decrease') {
+                return numBase - changeAmount;
+            } else {
+                return null; // Should not happen with dropdown
+            }
+        }
+
+
         // --- Event Listeners ---
         document.getElementById('calc1-btn').addEventListener('click', function() {
-            performCalculation(calculatePercentageOf, 'calc1-result', 'calc1-percent', 'calc1-base');
+            // Re-using generic performCalculation for simplicity here
+             const percent = getFloatValue('calc1-percent');
+             const base = getFloatValue('calc1-base');
+             displayResult('calc1-result', ''); // Clear first
+             if(percent === null || base === null) return;
+             displayResult('calc1-result', calculatePercentageOf(percent, base));
         });
+
         document.getElementById('calc2-btn').addEventListener('click', function() {
-             performCalculation(calculateWhatPercent, 'calc2-result', 'calc2-part', 'calc2-whole');
+            const part = getFloatValue('calc2-part');
+             const whole = getFloatValue('calc2-whole');
+             displayResult('calc2-result', ''); // Clear first
+             if(part === null || whole === null) return;
+             displayResult('calc2-result', calculateWhatPercent(part, whole));
         });
+
         document.getElementById('calc3-btn').addEventListener('click', function() {
-             performCalculation(calculatePercentChange, 'calc3-result', 'calc3-from', 'calc3-to');
+            const fromValue = getFloatValue('calc3-from');
+             const toValue = getFloatValue('calc3-to');
+             displayResult('calc3-result', ''); // Clear first
+             if(fromValue === null || toValue === null) return;
+             displayResult('calc3-result', calculatePercentChange(fromValue, toValue));
         });
+
+        // --- Add Event Listener for Calc 4 ---
+        document.getElementById('calc4-btn').addEventListener('click', function() {
+            const operation = document.getElementById('calc4-operation').value;
+            const base = getFloatValue('calc4-base');
+            const percent = getFloatValue('calc4-percent');
+
+            displayResult('calc4-result', ''); // Clear first
+
+            if (base === null || percent === null) {
+                return; // Don't calculate if inputs are missing
+            }
+
+            // No try/catch needed here as calculateValueChange handles errors internally
+             const result = calculateValueChange(operation, base, percent);
+             displayResult('calc4-result', result);
+
+        });
+
 
         // --- Add Enter key functionality ---
         const sections = document.querySelectorAll('.calculator-section');
         sections.forEach(section => {
-            const inputs = section.querySelectorAll('.input-line input[type="number"]');
-            const button = section.querySelector('.output-line button');
+            const inputs = section.querySelectorAll('.input-line input[type="number"]'); // Target only number inputs in input-line
+            const button = section.querySelector('.output-line button'); // Target button in output-line
             if(inputs.length > 0 && button){
                 inputs.forEach(input => {
                      input.addEventListener('keypress', function(event) {
                         if (event.key === 'Enter') {
-                             event.preventDefault();
-                             button.click();
+                             event.preventDefault(); // Prevent default form submission (if applicable)
+                             button.click(); // Trigger the button click
                         }
                     });
                 });
+                // Optionally handle Enter on the select element too? Less common.
+                 // const select = section.querySelector('.input-line select');
+                 // if (select) {
+                 //    select.addEventListener('keypress', function(event) { ... });
+                 // }
             }
         });
     </script>
