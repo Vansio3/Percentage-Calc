@@ -46,12 +46,11 @@
             flex-wrap: wrap;
         }
 
-        /* Styles for the new image logo */
         .logo-img {
-            display: block; /* Prevents extra space below image */
-            width: 36px;    /* Adjust size as needed */
-            height: 36px;   /* Adjust size as needed */
-            flex-shrink: 0; /* Prevent shrinking */
+            display: block;
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
         }
 
         h1 {
@@ -69,6 +68,15 @@
             border-radius: 6px;
             border: 1px solid #484848;
             overflow: hidden;
+        }
+
+        /* NEW: Section Description Styling */
+        .section-description {
+            font-size: 0.85em; /* Smaller than labels */
+            font-weight: 600; /* Semi-bold */
+            color: #AAAAAA; /* Lighter grey */
+            margin-bottom: 10px; /* Space below description */
+            line-height: 1.3;
         }
 
         /* Input & Output Lines */
@@ -91,7 +99,7 @@
             width: 85px;
             flex-shrink: 0;
             padding: 8px 10px;
-            border: 1px solid #2196f3; /* Blue border */
+            border: 1px solid #2196f3;
             background-color: #2D2D2D;
             color: #EAEAEA;
             border-radius: 4px;
@@ -109,7 +117,7 @@
         .calculator-section input[readonly] {
             background-color: #444;
             cursor: default;
-            border-color: #555; /* Keep border distinct dark gray */
+            border-color: #555;
              flex-grow: 1;
              min-width: 50px;
              padding: 8px 10px;
@@ -119,21 +127,19 @@
              border: 1px solid #555;
         }
 
-        /* Select Dropdown Styling - UPDATED */
+        /* Select Dropdown Styling */
         .calculator-section select {
-            padding: 6px 8px; /* Reduced padding */
-            appearance: none; /* Standard: Remove default arrow */
-            -webkit-appearance: none; /* Chrome, Safari, Edge */
-            -moz-appearance: none; /* Firefox */
-            border: 1px solid #2196f3; /* Match input border color */
-            background-color: #2D2D2D; /* Match input background */
-            color: #EAEAEA; /* Match input text color */
-            border-radius: 4px; /* Match input border-radius */
-            font-size: 0.95em; /* Match input font-size */
-            flex-shrink: 0; /* Prevent shrinking */
-            width: auto; /* Let browser determine width based on content */
-            /* If text gets cut off in Firefox, uncomment below */
-            /* padding-right: 15px; */
+            padding: 6px 8px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border: 1px solid #2196f3;
+            background-color: #2D2D2D;
+            color: #EAEAEA;
+            border-radius: 4px;
+            font-size: 0.95em;
+            flex-shrink: 0;
+            width: auto; /* Use auto width */
         }
 
         /* Labels and Text */
@@ -166,7 +172,7 @@
         /* Buttons */
         .calculator-section button {
             padding: 9px 14px;
-            background-color: #2196f3; /* Blue background */
+            background-color: #2196f3;
             color: #FFFFFF;
             border: none;
             border-radius: 4px;
@@ -178,7 +184,7 @@
             white-space: nowrap;
         }
         .calculator-section button:hover {
-            background-color: #1976D2; /* Darker blue on hover */
+            background-color: #1976D2;
         }
 
 
@@ -199,6 +205,7 @@
 
         <!-- Calculator 1: What is X% of Y? -->
         <section class="calculator-section">
+             <h4 class="section-description">Find Percentage of Number</h4>
             <div class="input-line">
                 <span>What is</span>
                 <input type="number" id="calc1-percent" step="any" aria-label="Percentage value">
@@ -213,6 +220,7 @@
 
         <!-- Calculator 2: X is what percent of Y? -->
         <section class="calculator-section">
+             <h4 class="section-description">Find Part's Percentage of Whole</h4>
              <div class="input-line">
                 <input type="number" id="calc2-part" step="any" aria-label="Part value">
                 <span>is what % of</span>
@@ -229,6 +237,7 @@
 
         <!-- Calculator 3: Percentage Increase/Decrease from X to Y -->
         <section class="calculator-section">
+             <h4 class="section-description">Calculate Percentage Change</h4>
              <div class="input-line">
                 <span>% change</span>
                 <span>from</span>
@@ -247,6 +256,7 @@
 
         <!-- Calculator 4: Increase/Decrease X by Y% -->
         <section class="calculator-section">
+             <h4 class="section-description">Value After % Increase/Decrease</h4>
              <div class="input-line">
                 <select id="calc4-operation" aria-label="Operation Type">
                     <option value="increase">Increase</option>
@@ -265,6 +275,7 @@
 
         <!-- Calculator 5: Reverse Percentage (Find Original) -->
         <section class="calculator-section">
+             <h4 class="section-description">Find Original Value (Reverse %)</h4>
              <div class="input-line">
                 <input type="number" id="calc5-final" step="any" aria-label="Final value">
                 <span>is</span>
@@ -381,13 +392,11 @@
             const percentAsDecimal = numPercent / 100;
 
             if (operation === 'more') {
-                // Original = Final / (1 + percentAsDecimal)
                  if (1 + percentAsDecimal === 0) {
                      return 'Calculation error';
                  }
                 originalValue = numFinal / (1 + percentAsDecimal);
             } else if (operation === 'less') {
-                // Original = Final / (1 - percentAsDecimal)
                 if (percentAsDecimal >= 1) {
                      if (numFinal === 0 && percentAsDecimal === 1) return 0;
                      return 'Cannot be 100% or more less';
@@ -462,14 +471,14 @@
         // --- Add Enter key functionality ---
         const sections = document.querySelectorAll('.calculator-section');
         sections.forEach(section => {
-            const inputs = section.querySelectorAll('.input-line input[type="number"]'); // Target only number inputs in input-line
-            const button = section.querySelector('.output-line button'); // Target button in output-line
+            const inputs = section.querySelectorAll('.input-line input[type="number"]');
+            const button = section.querySelector('.output-line button');
             if(inputs.length > 0 && button){
                 inputs.forEach(input => {
                      input.addEventListener('keypress', function(event) {
                         if (event.key === 'Enter') {
-                             event.preventDefault(); // Prevent default form submission (if applicable)
-                             button.click(); // Trigger the button click
+                             event.preventDefault();
+                             button.click();
                         }
                     });
                 });
